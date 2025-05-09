@@ -1,16 +1,14 @@
 extends Control
 
 # UI要素の参照
-@onready var category_tabs = $MarginContainer/VBoxContainer/CategoryTabs
-@onready var equipment_grid = $MarginContainer/VBoxContainer/ContentContainer/EquipmentGrid
-@onready var equipment_item_template = $MarginContainer/VBoxContainer/ContentContainer/EquipmentGrid/EquipmentItemTemplate
-@onready var equipment_detail_panel = $MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel
-@onready var name_label = $MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel/PanelContainer/MarginContainer/VBoxContainer/NameContainer/NameLabel
-@onready var rarity_label = $MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel/PanelContainer/MarginContainer/VBoxContainer/NameContainer/RarityLabel
-@onready var description_label = $MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel/PanelContainer/MarginContainer/VBoxContainer/DescriptionLabel
-@onready var effects_container = $MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel/PanelContainer/MarginContainer/VBoxContainer/EffectsContainer
-@onready var related_skills_container = $MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel/PanelContainer/MarginContainer/VBoxContainer/RelatedSkillsContainer
-@onready var equip_button = $MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel/EquipButton
+@onready var rider_type_button = $MarginContainer/VBoxContainer/EquipmentTypeContainer/RiderTypeButton
+@onready var horse_type_button = $MarginContainer/VBoxContainer/EquipmentTypeContainer/HorseTypeButton
+@onready var manual_type_button = $MarginContainer/VBoxContainer/EquipmentTypeContainer/ManualTypeButton
+@onready var equipment_grid = $MarginContainer/VBoxContainer/EquipmentScrollContainer/EquipmentGrid
+@onready var equipment_item_template = $MarginContainer/VBoxContainer/EquipmentScrollContainer/EquipmentGrid/EquipmentItemTemplate
+@onready var selected_rider_label = $MarginContainer/VBoxContainer/SelectedInfoContainer/SelectedRiderContainer/MarginContainer/VBoxContainer/SelectedLabel
+@onready var selected_horse_label = $MarginContainer/VBoxContainer/SelectedInfoContainer/SelectedHorseContainer/MarginContainer/VBoxContainer/SelectedLabel
+@onready var selected_manual_label = $MarginContainer/VBoxContainer/SelectedInfoContainer/SelectedManualContainer/MarginContainer/VBoxContainer/SelectedLabel
 @onready var back_button = $MarginContainer/VBoxContainer/ButtonContainer/BackButton
 @onready var next_button = $MarginContainer/VBoxContainer/ButtonContainer/NextButton
 
@@ -18,15 +16,16 @@ extends Control
 var equipment_items = {}  # カテゴリごとの装備リスト
 var selected_equipment = {}  # カテゴリごとの選択された装備
 var current_category = "騎手"  # 現在選択中のカテゴリ
-var selected_equipment_id = ""  # 現在選択中の装備ID
+var selected_item_nodes = {}  # 選択中の装備UI要素を追跡
 
 func _ready():
 	# テンプレートを非表示にする
 	equipment_item_template.visible = false
 	
 	# シグナル接続
-	category_tabs.tab_changed.connect(_on_category_tab_changed)
-	equip_button.pressed.connect(_on_equip_button_pressed)
+	rider_type_button.pressed.connect(func(): _on_type_button_pressed("騎手"))
+	horse_type_button.pressed.connect(func(): _on_type_button_pressed("装備"))
+	manual_type_button.pressed.connect(func(): _on_type_button_pressed("指南書"))
 	back_button.pressed.connect(_on_back_button_pressed)
 	next_button.pressed.connect(_on_next_button_pressed)
 	
@@ -38,11 +37,17 @@ func _ready():
 		print("警告: DataLoaderがロードされていません")
 	
 	# 初期表示
+	_update_type_button_states()
 	_load_category_equipment(current_category)
 	
-	# 初期状態では選択ボタンとトレーニング開始ボタンを無効化
-	equip_button.disabled = true
+	# 初期状態ではトレーニング開始ボタンを無効化
 	next_button.disabled = true
+
+# タイプボタンの状態を更新
+func _update_type_button_states():
+	rider_type_button.button_pressed = current_category == "騎手"
+	horse_type_button.button_pressed = current_category == "装備"
+	manual_type_button.button_pressed = current_category == "指南書"
 
 # 装備データのロード
 func _load_equipment_data(data_loader: DataLoader) -> void:
@@ -72,13 +77,11 @@ func _load_equipment_data(data_loader: DataLoader) -> void:
 			
 			equipment_items[category_jp].append(equipment)
 
-# カテゴリタブ変更時
-func _on_category_tab_changed(tab_idx: int) -> void:
-	# タブインデックスからカテゴリ名を取得
-	var categories = ["騎手", "装備", "指南書"]
-	if tab_idx >= 0 and tab_idx < categories.size():
-		current_category = categories[tab_idx]
-		_load_category_equipment(current_category)
+# タイプボタン押下時
+func _on_type_button_pressed(category: String) -> void:
+	current_category = category
+	_update_type_button_states()
+	_load_category_equipment(current_category)
 
 # カテゴリ装備の表示
 func _load_category_equipment(category: String) -> void:
@@ -94,18 +97,8 @@ func _load_category_equipment(category: String) -> void:
 	else:
 		print("カテゴリ「" + category + "」の装備はありません")
 	
-	# 既に選択されている装備があれば、その情報を表示
-	if selected_equipment.has(current_category):
-		var selected = selected_equipment[current_category]
-		_display_equipment_details(selected)
-		selected_equipment_id = selected.id
-	else:
-		# 選択されていない場合は詳細をクリア
-		_clear_equipment_details()
-		selected_equipment_id = ""
-	
-	# 装備選択ボタンの更新
-	equip_button.disabled = selected_equipment_id.is_empty()
+	# 装備を選択状態に
+	_update_selection_ui()
 
 # 装備アイテムをグリッドに追加
 func _add_equipment_item(equipment: Equipment) -> void:
@@ -117,122 +110,71 @@ func _add_equipment_item(equipment: Equipment) -> void:
 	# 装備情報を設定
 	var name_label = item.get_node("MarginContainer/VBoxContainer/NameLabel")
 	var rarity_label = item.get_node("MarginContainer/VBoxContainer/RarityLabel")
+	var category_label = item.get_node("MarginContainer/VBoxContainer/CategoryLabel")
+	var effect_preview = item.get_node("MarginContainer/VBoxContainer/EffectPreview")
+	var selected_indicator = item.get_node("SelectedIndicator")
 	
 	if name_label:
 		name_label.text = equipment.name
 	if rarity_label:
 		rarity_label.text = equipment.rarity
+	if category_label:
+		category_label.text = equipment.get_category_jp()
+	if effect_preview and equipment.effects.size() > 0:
+		var effect = equipment.effects[0]
+		var sign = "+" if effect.value > 0 else ""
+		var percent = "%" if effect.has("is_percentage") and effect.is_percentage else ""
+		effect_preview.text = effect.type + " " + sign + str(effect.value) + percent
 	
 	# 選択中の装備をハイライト
-	if equipment.id == selected_equipment_id:
-		item.add_theme_color_override("background_color", Color(0.3, 0.5, 0.7, 0.5))
+	if selected_equipment.has(current_category) and selected_equipment[current_category].id == equipment.id:
+		selected_indicator.visible = true
+		selected_item_nodes[current_category] = item
+	else:
+		selected_indicator.visible = false
 	
-	# クリックイベント
+	# クリックイベント - 直接選択する
 	item.gui_input.connect(func(event: InputEvent):
 		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-			_on_equipment_item_selected(equipment.id)
+			_on_equipment_item_selected(equipment, item)
 	)
 
 # 装備アイテム選択時
-func _on_equipment_item_selected(equipment_id: String) -> void:
-	selected_equipment_id = equipment_id
+func _on_equipment_item_selected(equipment: Equipment, item_node: Node) -> void:
+	# 以前の選択を解除
+	if selected_item_nodes.has(current_category) and is_instance_valid(selected_item_nodes[current_category]):
+		selected_item_nodes[current_category].get_node("SelectedIndicator").visible = false
 	
-	# データローダーから装備情報を取得
-	var data_loader = DataLoader.get_instance()
-	if data_loader:
-		var equipment = data_loader.get_equipment(equipment_id)
-		if equipment:
-			_display_equipment_details(equipment)
-			# 選択状態を更新
-			_update_selection_state()
+	# 新しい選択を適用
+	selected_equipment[current_category] = equipment
+	item_node.get_node("SelectedIndicator").visible = true
+	selected_item_nodes[current_category] = item_node
 	
-	# 装備選択ボタンを有効化
-	equip_button.disabled = false
-
-# 装備詳細の表示
-func _display_equipment_details(equipment: Equipment) -> void:
-	# 基本情報
-	name_label.text = equipment.name
-	rarity_label.text = equipment.rarity
-	description_label.text = equipment.description
-	
-	# 効果
-	_clear_container(effects_container)
-	for effect in equipment.effects:
-		var effect_label = Label.new()
-		var percent_symbol = ""
-		# is_percentageプロパティの存在を確認
-		if effect.has("is_percentage") and effect.is_percentage:
-			percent_symbol = "%"
-		effect_label.text = "• " + effect.type + " " + ("+" if effect.value > 0 else "") + str(effect.value) + percent_symbol
-		effects_container.add_child(effect_label)
-	
-	# 関連スキル
-	_clear_container(related_skills_container)
-	if equipment.associated_skill_ids.size() > 0:
-		var data_loader = DataLoader.get_instance()
-		for skill_id in equipment.associated_skill_ids:
-			var skill = data_loader.get_skill(skill_id)
-			if skill:
-				var skill_label = Label.new()
-				skill_label.text = "• " + skill.name
-				related_skills_container.add_child(skill_label)
-	else:
-		var no_skill_label = Label.new()
-		no_skill_label.text = "関連スキルはありません"
-		related_skills_container.add_child(no_skill_label)
-
-# コンテナの中身をクリア
-func _clear_container(container: Node) -> void:
-	for child in container.get_children():
-		child.queue_free()
-
-# 装備詳細をクリア
-func _clear_equipment_details() -> void:
-	name_label.text = ""
-	rarity_label.text = ""
-	description_label.text = "装備を選択してください"
-	_clear_container(effects_container)
-	_clear_container(related_skills_container)
-
-# 選択状態の更新
-func _update_selection_state() -> void:
-	# 装備グリッドの選択状態を更新
-	for child in equipment_grid.get_children():
-		if child != equipment_item_template and child.visible:
-			var item_name = child.get_node("MarginContainer/VBoxContainer/NameLabel").text
-			var data_loader = DataLoader.get_instance()
-			var selected = false
-			
-			for equipment in equipment_items[current_category]:
-				if equipment.id == selected_equipment_id and equipment.name == item_name:
-					selected = true
-					break
-			
-			if selected:
-				child.add_theme_color_override("background_color", Color(0.3, 0.5, 0.7, 0.5))
-			else:
-				child.remove_theme_color_override("background_color")
+	# 選択表示を更新
+	_update_selection_ui()
 	
 	# トレーニング開始ボタンの状態を更新
 	_update_next_button_state()
 
-# 装備選択ボタン押下時
-func _on_equip_button_pressed() -> void:
-	if selected_equipment_id.is_empty():
-		return
+# 選択表示の更新
+func _update_selection_ui() -> void:
+	# 騎手の選択状態
+	if selected_equipment.has("騎手"):
+		selected_rider_label.text = selected_equipment["騎手"].name
+	else:
+		selected_rider_label.text = "未選択"
 	
-	# データローダーから装備情報を取得
-	var data_loader = DataLoader.get_instance()
-	if data_loader:
-		var equipment = data_loader.get_equipment(selected_equipment_id)
-		if equipment:
-			# 現在のカテゴリに装備を設定
-			selected_equipment[current_category] = equipment
-			print(current_category + "カテゴリに「" + equipment.name + "」を装備しました")
-			
-			# トレーニング開始ボタンの状態を更新
-			_update_next_button_state()
+	# 装備の選択状態
+	if selected_equipment.has("装備"):
+		selected_horse_label.text = selected_equipment["装備"].name
+	else:
+		selected_horse_label.text = "未選択"
+	
+	# 指南書の選択状態
+	if selected_equipment.has("指南書"):
+		selected_manual_label.text = selected_equipment["指南書"].name
+	else:
+		selected_manual_label.text = "未選択"
 
 # トレーニング開始ボタンの状態を更新
 func _update_next_button_state() -> void:

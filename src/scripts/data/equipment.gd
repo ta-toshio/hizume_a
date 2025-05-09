@@ -22,6 +22,17 @@ func _init(equipment_data: Dictionary = {}):
 	if not equipment_data.is_empty():
 		_load_from_dict(equipment_data)
 
+# カテゴリを日本語で取得
+func get_category_jp() -> String:
+	match category:
+		"rider":
+			return "騎手"
+		"horse":
+			return "装備"
+		"manual":
+			return "指南書"
+	return "装備"  # デフォルト
+
 # 熟度を加算
 func add_familiarity(amount: int) -> void:
 	familiarity += amount
