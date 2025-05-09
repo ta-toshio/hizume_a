@@ -3,44 +3,30 @@
 ## 📂 フォルダ構成
 
 ```
-project_root/
-│
-├── 📂 assets/              # 全てのアセットファイル
-│   ├── 📂 images/          # 画像・スプライト
-│   │   ├── 📂 ui/          # UI要素画像
-│   │   ├── 📂 characters/  # キャラクター画像
-│   │   └── 📂 effects/     # エフェクト画像
-│   │
-│   ├── 📂 fonts/           # フォントファイル
-│   ├── 📂 audio/           # サウンドファイル
-│   │   ├── 📂 bgm/         # BGM
-│   │   └── 📂 sfx/         # 効果音
-│   │
-│   └── 📂 shaders/         # シェーダーファイル
-│
-├── 📂 data/                 # JSONデータ（マスターデータ）
-│   ├── 📂 horses/           # 馬データ
-│   ├── 📂 equipment/        # 装備データ
-│   ├── 📂 skills/           # スキルデータ
-│   ├── 📂 training/         # トレーニングデータ
-│   └── 📂 events/           # イベントデータ
-│
-├── 📂 scenes/               # シーン（画面）
-│   ├── 📂 ui/               # UI共通コンポーネント
-│   ├── 📂 training/         # トレーニング画面
-│   ├── 📂 race/             # レース画面
-│   └── 📂 common/           # 共通シーン
-│
-├── 📂 scripts/              # GDScriptファイル
-│   ├── 📂 core/             # コアシステム
-│   ├── 📂 models/           # データモデル
-│   ├── 📂 managers/         # 状態管理
-│   ├── 📂 ui/               # UI制御
-│   ├── 📂 utils/            # ユーティリティ
-│   └── 📂 effects/          # エフェクト処理
-│
-├── 📂 addons/               # プラグイン
-└── 📂 saves/                # セーブデータ（ローカル）
+hizume/
+└── src/                  # プロジェクトルート
+    ├── 📂 assets/           # 全てのアセットファイル
+    │   ├── 📂 images/       # 画像・スプライト
+    │   ├── 📂 fonts/        # フォントファイル
+    │   └── 📂 sounds/       # サウンドファイル
+    │
+    ├── 📂 resources/        # リソースファイル
+    │   └── 📂 data/         # JSONデータ（マスターデータ）
+    │       ├── horses.json  # 馬データ
+    │       ├── equipment.json # 装備データ
+    │       └── skills.json  # スキルデータ
+    │
+    ├── 📂 scenes/            # シーン（画面）
+    │   ├── 📂 autoloads/     # 自動読み込みシーン
+    │   ├── 📂 screens/       # 画面シーン
+    │   ├── 📂 ui_components/ # UI共通コンポーネント
+    │   └── 📂 setup/         # 初期設定シーン
+    │
+    └── 📂 scripts/           # GDScriptファイル
+        ├── 📂 data/          # データモデル
+        ├── 📂 managers/      # 状態管理
+        ├── 📂 ui/            # UI制御
+        └── 📂 setup/         # 初期設定スクリプト
 ```
 
 ## 🧩 クラス設計
@@ -52,117 +38,79 @@ project_root/
 class_name GameManager extends Node
 # ゲーム全体の状態管理
 
-var current_state: String        # 現在のゲーム状態
-var player_data: PlayerData      # プレイヤーデータ参照
-var training_manager: TrainingManager  # トレーニング管理
-var race_manager: RaceManager    # レース管理
-var data_loader: DataLoader      # データローダー
+var current_horse: Horse        # 現在の馬
+var current_equipment: Dictionary = {}  # カテゴリごとの装備
+var available_skills: Array[Skill] = []  # 利用可能なスキル
+var unlocked_skills: Array[Skill] = []   # 習得したスキル
+var race_records: Array[Dictionary] = [] # レース結果記録
 
 # 主要メソッド
-func change_state(new_state: String) -> void
+static func get_instance() -> GameManager  # シングルトンインスタンス取得
 func save_game() -> void
 func load_game() -> void
 func start_training() -> void
 func start_race() -> void
 ```
 
-#### TrainingManager
+#### TrainingState (シングルトン)
 ```gdscript
-class_name TrainingManager extends Node
-# 育成サイクル管理
+class_name TrainingState extends Node
+# 育成状態管理
 
-var current_turn: int
-var current_month: String
-var fatigue: int
-var chakra_flow: String  # 現在のチャクラ気配カテゴリ
-var resonance_gauge: int  # 補助ゲージ
-var stagnation_count: Dictionary  # カテゴリごとの連続使用回数
+var current_training_options: Array[Dictionary] = []  # 現在のトレーニング選択肢
+var is_special_month: bool = false  # 特別月間フラグ
+var is_race_available: bool = false  # レース参加可能フラグ
+var last_training_result: Dictionary = {}  # 最後のトレーニング結果
 
 # 主要メソッド
-func start_new_month() -> void  # 新しい月の処理開始
-func select_training(category: String) -> void  # トレーニング選択
-func execute_training() -> void  # トレーニング実行
-func calculate_growth() -> Dictionary  # 成長計算
-func check_resonance() -> bool  # 共鳴チェック
-func update_skill_progress() -> void  # スキル進行更新
-func update_familiarity() -> void  # 熟度更新
-func rest() -> void  # 休養処理
+func get_training_categories() -> Array[String]  # トレーニングカテゴリ一覧取得
 ```
 
-#### RaceManager
-```gdscript
-class_name RaceManager extends Node
-# レース処理管理
-
-var current_section: int  # 現在の区間
-var race_scores: Dictionary  # 各馬のスコア
-var activated_skills: Array  # 発動スキル一覧
-
-# 主要メソッド
-func start_race() -> void
-func calculate_section_score() -> void  # 区間スコア計算
-func process_skills() -> void  # スキル発動処理
-func update_positions() -> void  # 順位更新
-func finish_race() -> Dictionary  # レース結果取得
-```
-
-#### DataLoader
+#### DataLoader (シングルトン)
 ```gdscript
 class_name DataLoader extends Node
 # マスターデータロード管理
 
-var horses_data: Dictionary
-var equipment_data: Dictionary
-var skills_data: Dictionary
-var training_data: Dictionary
-var events_data: Dictionary
+var _horses_data: Dictionary = {}  # 馬データキャッシュ
+var _equipment_data: Dictionary = {}  # 装備データキャッシュ
+var _skills_data: Dictionary = {}  # スキルデータキャッシュ
 
 # 主要メソッド
-func load_all_data() -> void
-func get_horse_by_id(id: String) -> Dictionary
-func get_equipment_by_id(id: String) -> Dictionary
-func get_skill_by_id(id: String) -> Dictionary
-func get_random_training(category: String) -> Dictionary
-func get_random_event(condition: Dictionary) -> Dictionary
+static func get_instance() -> DataLoader  # シングルトンインスタンス取得
+func _load_all_data() -> void  # 全データ読み込み
+func get_horse(horse_id: String) -> Horse  # 馬オブジェクト取得
+func get_all_horse_ids() -> Array[String]  # 利用可能な馬ID一覧
+func get_equipment(equipment_id: String) -> Equipment  # 装備オブジェクト取得
+func get_skill(skill_id: String) -> Skill  # スキルオブジェクト取得
+func generate_dummy_data() -> void  # ダミーデータ生成
+func save_dummy_data_to_files() -> void  # ダミーデータをファイルに保存
 ```
 
 ### データモデル
-
-#### PlayerData
-```gdscript
-class_name PlayerData extends Resource
-# プレイヤー進行データ
-
-var player_name: String
-var current_horse: Horse
-var equipped_items: Dictionary  # カテゴリ→装備IDのマッピング
-var acquired_skills: Array
-var training_history: Array
-var race_results: Array
-
-# 主要メソッド
-func equip_item(category: String, item_id: String) -> void
-func add_skill(skill_id: String) -> void
-func add_training_record(record: Dictionary) -> void
-func add_race_result(result: Dictionary) -> void
-func get_total_score() -> int
-```
 
 #### Horse
 ```gdscript
 class_name Horse extends Resource
 # 育成対象の馬データ
 
-var id: String
-var name: String
-var stats: StatBlock
-var aptitude: Array  # 得意カテゴリ
-var growth_rates: Dictionary  # 成長率
+var id: String = ""
+var name: String = ""
+var description: String = ""
+var base_stats: StatBlock
+var current_stats: StatBlock
+var growth_rates: Dictionary = {}
+var aptitude: Array[String] = []  # 得意カテゴリ
+var fatigue: int = 0  # 疲労値（0-100）
+var age_in_months: int = 36  # 月齢（初期値：3歳=36ヶ月）
+var training_count: Dictionary = {}  # カテゴリごとのトレーニング回数
 
 # 主要メソッド
-func increase_stat(stat_name: String, amount: int) -> void
-func calculate_race_score(section: String) -> float
-func get_best_category() -> String
+func add_fatigue(amount: int) -> void
+func reduce_fatigue(amount: int) -> void
+func advance_month() -> void
+func get_age_string() -> String
+func record_training(category: String) -> void
+func to_dict() -> Dictionary
 ```
 
 #### StatBlock
@@ -178,21 +126,17 @@ var mental: int = 0
 var flexibility: int = 0
 var intellect: int = 0
 
-# 補助ステータス（オプション）
-var secondary_stats = {
-    "reaction": 0,
-    "balance": 0,
-    "focus": 0,
-    "adaptability": 0,
-    "judgment": 0,
-    "recovery": 0
-}
+# 補助ステータス
+var reaction: int = 0
+var balance: int = 0
+var focus: int = 0
+var adaptability: int = 0
+var judgment: int = 0
+var recovery: int = 0
 
 # 主要メソッド
-func get_main_stats() -> Dictionary
-func get_all_stats() -> Dictionary
-func increase(stat_name: String, amount: int) -> void
-func get_total() -> int
+func to_dict() -> Dictionary
+func from_dict(data: Dictionary) -> void
 ```
 
 #### Equipment
@@ -200,20 +144,18 @@ func get_total() -> int
 class_name Equipment extends Resource
 # 装備データ
 
-var id: String
-var name: String
-var category: String  # 'rider', 'horse', 'manual'
-var rarity: String
-var related_training: String
-var effects: Array
-var associated_skills: Array
-var familiarity: int = 0  # 熟度値
-var familiarity_level: int = 1  # 熟度レベル
+var id: String = ""
+var name: String = ""
+var description: String = ""
+var category: String = ""  # "rider", "horse", "manual"
+var rarity: String = "SSR"
+var effects: Array = []
+var related_training: String = ""
+var associated_skill_ids: Array = []
 
 # 主要メソッド
 func get_effect_value(effect_type: String) -> float
-func increase_familiarity(amount: int) -> bool  # レベルアップ時はtrue
-func calculate_resonance_bonus() -> float
+func to_dict() -> Dictionary
 ```
 
 #### Skill
@@ -221,123 +163,105 @@ func calculate_resonance_bonus() -> float
 class_name Skill extends Resource
 # スキルデータ
 
-var id: String
-var name: String
-var description: String
-var effect: Dictionary
-var condition: Dictionary
-var category_tags: Array
-var required_training: Array
-var progress: int = 0
+var id: String = ""
+var name: String = ""
+var description: String = ""
+var effect: Dictionary = {}
+var condition: Dictionary = {}
+var category_tags: Array = []
+var required_training: Array = []
 var progress_threshold: int = 5
-var is_bloomed: bool = false
 
 # 主要メソッド
-func increase_progress(amount: int) -> bool  # 開花時はtrue
-func check_activation_condition(race_state: Dictionary) -> bool
-func apply_effect(race_state: Dictionary) -> Dictionary
+func is_active(race_state: Dictionary) -> bool
 func get_effect_value() -> float
+func to_dict() -> Dictionary
 ```
 
 ### UI管理
 
-#### UIManager
+#### TitleScreen
 ```gdscript
-class_name UIManager extends Node
-# UI管理・画面遷移
+extends Control
+# タイトル画面
 
-var current_screen: String
-var ui_stack: Array  # 画面スタック
+# UI要素
+@onready var start_button
+@onready var skill_button
+@onready var records_button
+@onready var exit_button
 
 # 主要メソッド
-func change_screen(screen_name: String) -> void
-func push_screen(screen_name: String) -> void  # 画面スタック追加
-func pop_screen() -> void  # 画面スタック戻る
-func show_popup(popup_name: String, data: Dictionary) -> void
-func update_training_ui() -> void
-func update_race_ui() -> void
-func show_status_effect(effect_type: String, amount: int) -> void
+func _play_intro_animation() -> void
+func _check_data_status() -> void
+func _update_button_states() -> void
 ```
 
-#### TrainingScreen
+#### HorseSelectScreen
 ```gdscript
-class_name TrainingScreen extends Control
-# トレーニング画面UI
+extends Control
+# 馬選択画面
 
-# UI要素参照
-var status_panel: Control
-var training_options: Control
-var fatigue_bar: ProgressBar
-var resonance_gauge: Control
+# UI要素
+@onready var horse_list_container
+@onready var horse_item_template
+@onready var name_label
+@onready var description_label
+@onready var stats_grid
+@onready var aptitude_label
+@onready var select_button
+@onready var back_button
 
 # 主要メソッド
-func _ready() -> void
-func update_training_options() -> void
-func show_selected_training_detail(training_id: String) -> void
-func show_training_result(result: Dictionary) -> void
-func update_status_display() -> void
-func update_skill_progress() -> void
-func update_familiarity_bars() -> void
-func show_resonance_effect() -> void
+func _load_horse_list(data_loader: DataLoader) -> void
+func _on_horse_selected(horse_id: String) -> void
+func _display_horse_details(horse_data: Dictionary) -> void
 ```
 
-#### RaceScreen
+#### EquipmentSelectScreen
 ```gdscript
-class_name RaceScreen extends Control
-# レース画面UI
+extends Control
+# 装備選択画面
 
-# UI要素参照
-var section_indicator: Control
-var horse_positions: Control
-var skill_log: RichTextLabel
-var result_panel: Control
+# UI要素
+@onready var category_tabs
+@onready var equipment_grid
+@onready var equipment_detail_panel
+@onready var equip_button
+@onready var back_button
+@onready var next_button
 
 # 主要メソッド
-func _ready() -> void
-func start_race_animation() -> void
-func update_section(section: String) -> void
-func update_horse_positions() -> void
-func show_skill_activation(skill_name: String) -> void
-func show_section_result() -> void
-func show_final_result() -> void
+func _load_equipment_list(category: String) -> void
+func _on_equipment_selected(equipment_id: String) -> void
+func _display_equipment_details(equipment_data: Dictionary) -> void
 ```
 
 ## 🔄 主要データフロー
 
 ### 育成サイクル
-1. `GameManager` → `TrainingManager.start_new_month()`
+1. `GameManager` → トレーニング画面表示
 2. 月次チャクラ気配決定
-3. UI表示更新
+3. トレーニング選択肢表示
 4. プレイヤーがトレーニング選択
-5. `TrainingManager.execute_training()`
-6. ステータス・スキル・熟度の更新
-7. UI演出と次の月へ
+5. ステータス更新、スキル進行、熟度加算
+6. UI演出と次の月へ
 
 ### レースフロー
-1. `GameManager` → `RaceManager.start_race()`
-2. 区間ごとにループ:
-   - `RaceManager.calculate_section_score()`
-   - `RaceManager.process_skills()`
-   - `RaceManager.update_positions()`
-   - UI更新と演出
-3. `RaceManager.finish_race()`
-4. 結果表示と記録
+1. レース画面表示
+2. 区間ごとにスコア計算、スキル発動
+3. 結果表示と記録
 
 ## 💾 保存システム
 
 ### セーブデータ構造
 ```gdscript
 {
-    "player_name": String,
-    "current_horse": Dictionary,  # Horse データ
-    "current_turn": int,
-    "fatigue": int,
-    "equipped_items": Dictionary,
-    "stats": Dictionary,  # StatBlock データ
+    "horse": Dictionary,  # 馬データ
+    "equipment": Dictionary,  # 装備データ
     "skills": Array,  # 取得スキル一覧
-    "familiarity": Dictionary,  # 装備ID→熟度値のマップ
-    "race_results": Array,  # レース結果履歴
-    "skill_progress": Dictionary  # スキルID→進行値のマップ
+    "race_records": Array,  # レース結果
+    "training_history": Array  # トレーニング履歴
 }
 ```
 

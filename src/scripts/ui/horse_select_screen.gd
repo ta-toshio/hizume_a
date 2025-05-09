@@ -110,8 +110,9 @@ func _on_select_button_pressed() -> void:
 	
 	if data_loader and game_manager:
 		var horse = data_loader.get_horse(selected_horse_id)
+		game_manager.current_horse = horse
 		
-		# 次の画面（装備選択）へ遷移
+		# 装備選択画面へ遷移
 		get_tree().change_scene_to_file("res://scenes/screens/equipment_select_screen.tscn")
 	else:
 		print("エラー: GameManagerまたはDataLoaderが見つかりません")

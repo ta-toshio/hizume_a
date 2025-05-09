@@ -84,6 +84,13 @@ func get_all_horse_ids() -> Array[String]:
 		ids.append(id)
 	return ids
 
+# 利用可能な全装備のIDを取得
+func get_all_equipment_ids() -> Array[String]:
+	var ids: Array[String] = []
+	for id in _equipment_data.keys():
+		ids.append(id)
+	return ids
+
 # 装備オブジェクトを取得
 func get_equipment(equipment_id: String) -> Equipment:
 	if _equipment_data.has(equipment_id):
@@ -328,4 +335,23 @@ func _save_json_file(file_path: String, data: Array) -> void:
 		file.close()
 		print("ファイル保存: ", file_path)
 	else:
-		print("エラー: ファイルを保存できませんでした: ", file_path) 
+		print("エラー: ファイルを保存できませんでした: ", file_path)
+
+# データファイルの存在確認
+func _check_data_files_exist() -> bool:
+	var file_access = FileAccess.open("res://resources/data/horses.json", FileAccess.READ)
+	var horses_exist = file_access != null
+	if file_access:
+		file_access.close()
+		
+	file_access = FileAccess.open("res://resources/data/equipment.json", FileAccess.READ)
+	var equipment_exist = file_access != null
+	if file_access:
+		file_access.close()
+		
+	file_access = FileAccess.open("res://resources/data/skills.json", FileAccess.READ)
+	var skills_exist = file_access != null
+	if file_access:
+		file_access.close()
+	
+	return horses_exist && equipment_exist && skills_exist 

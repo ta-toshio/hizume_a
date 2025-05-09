@@ -96,11 +96,19 @@ func _load_from_dict(data: Dictionary) -> void:
 	if data.has("rarity"):
 		rarity = data.rarity
 	if data.has("effects"):
-		effects = data.effects
+		# 型変換：一般的なArrayからArray[Dictionary]への変換
+		effects.clear()
+		for effect in data.effects:
+			if effect is Dictionary:
+				effects.append(effect)
 	if data.has("related_training"):
 		related_training = data.related_training
 	if data.has("associated_skill_ids"):
-		associated_skill_ids = data.associated_skill_ids
+		# 型変換：一般的なArrayからArray[String]への変換
+		associated_skill_ids.clear()
+		for skill_id in data.associated_skill_ids:
+			if skill_id is String:
+				associated_skill_ids.append(skill_id)
 	if data.has("familiarity"):
 		familiarity = data.familiarity
 		_update_familiarity_level()

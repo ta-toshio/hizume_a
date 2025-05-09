@@ -103,7 +103,10 @@ func _load_from_dict(data: Dictionary) -> void:
 	if data.has("growth_rates"):
 		growth_rates = data.growth_rates
 	if data.has("aptitude"):
-		aptitude = data.aptitude
+		# 配列を明示的に変換
+		aptitude.clear()
+		for item in data.aptitude:
+			aptitude.append(str(item))
 	if data.has("fatigue"):
 		fatigue = data.fatigue
 	if data.has("age_in_months"):

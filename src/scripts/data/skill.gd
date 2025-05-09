@@ -116,9 +116,17 @@ func _load_from_dict(data: Dictionary) -> void:
 	if data.has("condition"):
 		condition = data.condition
 	if data.has("category_tags"):
-		category_tags = data.category_tags
+		# 型変換：一般的なArrayからArray[String]への変換
+		category_tags.clear()
+		for tag in data.category_tags:
+			if tag is String:
+				category_tags.append(tag)
 	if data.has("required_training"):
-		required_training = data.required_training
+		# 型変換：一般的なArrayからArray[String]への変換
+		required_training.clear()
+		for training in data.required_training:
+			if training is String:
+				required_training.append(training)
 	if data.has("progress_threshold"):
 		progress_threshold = data.progress_threshold
 	if data.has("progress"):

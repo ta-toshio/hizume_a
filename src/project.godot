@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="チャクラと武道の馬育成ゲーム"
-run/main_scene="res://scenes/setup/generate_dummy_data.tscn"
+run/main_scene="res://scenes/screens/title_screen.tscn"
 config/features=PackedStringArray("4.4")
 config/icon="res://icon.png"
 

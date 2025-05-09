@@ -1,0 +1,210 @@
+[gd_scene load_steps=2 format=3 uid="uid://cyohdx5t15vo3"]
+
+[ext_resource type="Script" path="res://scripts/ui/equipment_select_screen.gd" id="1_yjhtc"]
+
+[node name="EquipmentSelectScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_yjhtc")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.278431, 0.227451, 0.376471, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "装備選択"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="CategoryTabs" type="TabContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="騎手" type="VBoxContainer" parent="MarginContainer/VBoxContainer/CategoryTabs"]
+layout_mode = 2
+
+[node name="装備" type="VBoxContainer" parent="MarginContainer/VBoxContainer/CategoryTabs"]
+visible = false
+layout_mode = 2
+
+[node name="指南書" type="VBoxContainer" parent="MarginContainer/VBoxContainer/CategoryTabs"]
+visible = false
+layout_mode = 2
+
+[node name="ContentContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 3.0
+
+[node name="EquipmentGrid" type="GridContainer" parent="MarginContainer/VBoxContainer/ContentContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.6
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 3
+
+[node name="EquipmentItemTemplate" type="PanelContainer" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentGrid/EquipmentItemTemplate"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentGrid/EquipmentItemTemplate/MarginContainer"]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentGrid/EquipmentItemTemplate/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "装備名"
+horizontal_alignment = 1
+
+[node name="RarityLabel" type="Label" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentGrid/EquipmentItemTemplate/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 12
+text = "SSR"
+horizontal_alignment = 1
+
+[node name="VSeparator" type="VSeparator" parent="MarginContainer/VBoxContainer/ContentContainer"]
+layout_mode = 2
+
+[node name="EquipmentDetailPanel" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ContentContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel/PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel/PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="NameContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel/PanelContainer/MarginContainer/VBoxContainer/NameContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 24
+text = "装備名"
+
+[node name="RarityLabel" type="Label" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel/PanelContainer/MarginContainer/VBoxContainer/NameContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "SSR"
+horizontal_alignment = 2
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="DescriptionLabel" type="Label" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "装備の効果や説明文が表示されます。"
+autowrap_mode = 3
+
+[node name="HSeparator2" type="HSeparator" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="EffectsLabel" type="Label" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "効果"
+
+[node name="EffectsContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Effect1" type="Label" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel/PanelContainer/MarginContainer/VBoxContainer/EffectsContainer"]
+layout_mode = 2
+text = "• 速力 +10"
+
+[node name="Effect2" type="Label" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel/PanelContainer/MarginContainer/VBoxContainer/EffectsContainer"]
+layout_mode = 2
+text = "• 技術トレーニング効果 +15%"
+
+[node name="HSeparator3" type="HSeparator" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="RelatedSkillsLabel" type="Label" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "関連スキル"
+
+[node name="RelatedSkillsContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel/PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Skill1" type="Label" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel/PanelContainer/MarginContainer/VBoxContainer/RelatedSkillsContainer"]
+layout_mode = 2
+text = "• 一気の極み"
+
+[node name="EquipButton" type="Button" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel"]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+disabled = true
+text = "この装備を選択"
+
+[node name="HSeparator2" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ButtonContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="BackButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonContainer"]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "戻る"
+
+[node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer/ButtonContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+
+[node name="NextButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonContainer"]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+disabled = true
+text = "トレーニング開始" 

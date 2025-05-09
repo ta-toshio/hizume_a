@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://csjsjgb0tjm0j"]
 
-[ext_resource type="Script" path="res://scripts/ui/title_screen.gd" id="1_8mbcv"]
+[ext_resource type="Script" uid="uid://bakdqwfufwhbb" path="res://scripts/ui/title_screen.gd" id="1_8mbcv"]
 
 [node name="TitleScreen" type="Control"]
 layout_mode = 3
@@ -18,7 +18,16 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.290196, 0.188235, 0.419608, 1)
+color = Color(0.133333, 0.109804, 0.235294, 1)
+
+[node name="BackgroundGradient" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.2)
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -27,55 +36,80 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -200.0
-offset_top = -150.0
-offset_right = 200.0
-offset_bottom = 150.0
+offset_left = -300.0
+offset_top = -180.0
+offset_right = 300.0
+offset_bottom = 220.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 20
 
 [node name="TitleLabel" type="Label" parent="VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 48
+theme_override_colors/font_color = Color(0.937255, 0.913725, 0.815686, 1)
+theme_override_colors/font_shadow_color = Color(0.117647, 0.0588235, 0.211765, 0.784314)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/shadow_outline_size = 2
+theme_override_font_sizes/font_size = 56
 text = "チャクラと武道の馬育成"
 horizontal_alignment = 1
 
 [node name="SubtitleLabel" type="Label" parent="VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
+theme_override_colors/font_color = Color(0.862745, 0.701961, 0.956863, 1)
+theme_override_colors/font_shadow_color = Color(0.117647, 0.0588235, 0.211765, 0.784314)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 28
 text = "～導きの騎手～"
 horizontal_alignment = 1
 
 [node name="Spacer" type="Control" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 40)
+custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 
 [node name="StartButton" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(200, 60)
+custom_minimum_size = Vector2(250, 60)
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 24
+theme_override_colors/font_hover_color = Color(1, 0.921569, 0.690196, 1)
+theme_override_colors/font_color = Color(0.937255, 0.921569, 0.839216, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.921569, 0.690196, 1)
+theme_override_font_sizes/font_size = 28
 text = "育成開始"
 
 [node name="SkillButton" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(200, 60)
+custom_minimum_size = Vector2(250, 60)
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 24
+theme_override_colors/font_hover_color = Color(1, 0.921569, 0.690196, 1)
+theme_override_colors/font_color = Color(0.937255, 0.921569, 0.839216, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.921569, 0.690196, 1)
+theme_override_font_sizes/font_size = 28
 text = "スキル図鑑"
 
 [node name="RecordsButton" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(200, 60)
+custom_minimum_size = Vector2(250, 60)
 layout_mode = 2
 size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 24
+theme_override_colors/font_hover_color = Color(1, 0.921569, 0.690196, 1)
+theme_override_colors/font_color = Color(0.937255, 0.921569, 0.839216, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.921569, 0.690196, 1)
+theme_override_font_sizes/font_size = 28
 text = "育成記録"
 
+[node name="Spacer2" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
 [node name="ExitButton" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(200, 60)
+custom_minimum_size = Vector2(200, 50)
 layout_mode = 2
 size_flags_horizontal = 4
+theme_override_colors/font_hover_color = Color(1, 0.921569, 0.690196, 1)
+theme_override_colors/font_color = Color(0.780392, 0.776471, 0.741176, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.921569, 0.690196, 1)
 theme_override_font_sizes/font_size = 24
 text = "終了"
 
@@ -86,11 +120,28 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -100.0
+offset_left = -120.0
 offset_top = -40.0
 offset_right = -20.0
 offset_bottom = -20.0
 grow_horizontal = 0
 grow_vertical = 0
+theme_override_colors/font_color = Color(0.780392, 0.776471, 0.741176, 1)
 text = "Ver 0.1.0"
-horizontal_alignment = 2 
+horizontal_alignment = 2
+
+[node name="DecorativeLine" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(600, 2)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -200.0
+offset_right = 300.0
+offset_bottom = -198.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.862745, 0.701961, 0.956863, 0.498039)
