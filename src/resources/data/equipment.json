@@ -1,0 +1,68 @@
+[
+  {
+    "associated_skill_ids": [
+      "skill_001",
+      "skill_002"
+    ],
+    "category": "rider",
+    "description": "精神を安定させる騎手装束",
+    "effects": [
+      {
+        "type": "trainingBoost",
+        "value": 15
+      },
+      {
+        "condition": "familiarity_lv2",
+        "type": "skillSupport",
+        "value": 1
+      }
+    ],
+    "id": "eq_rider_001",
+    "name": "静心の装束",
+    "rarity": "SSR",
+    "related_training": "精神"
+  },
+  {
+    "associated_skill_ids": [
+      "skill_003"
+    ],
+    "category": "horse",
+    "description": "足音を消し、静かに疾走する",
+    "effects": [
+      {
+        "type": "trainingBoost",
+        "value": 10
+      },
+      {
+        "condition": "resonance",
+        "type": "eventBuff",
+        "value": 20
+      }
+    ],
+    "id": "eq_horse_001",
+    "name": "無音蹄",
+    "rarity": "SSR",
+    "related_training": "速力"
+  },
+  {
+    "associated_skill_ids": [
+      "skill_004"
+    ],
+    "category": "manual",
+    "description": "柔軟性を高める秘伝書",
+    "effects": [
+      {
+        "type": "skillSupport",
+        "value": 2
+      },
+      {
+        "type": "trainingBoost",
+        "value": 5
+      }
+    ],
+    "id": "eq_manual_001",
+    "name": "柔走体捌の書",
+    "rarity": "SSR",
+    "related_training": "柔軟"
+  }
+]

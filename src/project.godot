@@ -11,15 +11,28 @@ config_version=5
 [application]
 
 config/name="チャクラと武道の馬育成ゲーム"
-run/main_scene="res://scenes/hello_world.tscn"
+run/main_scene="res://scenes/setup/generate_dummy_data.tscn"
 config/features=PackedStringArray("4.4")
 config/icon="res://icon.png"
+
+[autoload]
+
+GameManager="*res://scenes/autoloads/game_manager.tscn"
+TrainingState="*res://scenes/autoloads/training_state.tscn"
+DataLoader="*res://scenes/autoloads/data_loader.tscn"
 
 [display]
 
 window/size/viewport_width=1280
 window/size/viewport_height=720
 window/stretch/mode="canvas_items"
+
+[global_class_resources]
+
+StatBlock="res://scripts/data/stat_block.gd"
+Horse="res://scripts/data/horse.gd"
+Equipment="res://scripts/data/equipment.gd"
+Skill="res://scripts/data/skill.gd"
 
 [rendering]
 

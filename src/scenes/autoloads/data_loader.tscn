@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b8vhf6a44y4q8"]
+
+[ext_resource type="Script" path="res://scripts/managers/data_loader.gd" id="1_7crlg"]
+
+[node name="DataLoader" type="Node"]
+script = ExtResource("1_7crlg") 

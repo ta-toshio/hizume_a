@@ -1,0 +1,33 @@
+[
+  {
+    "aptitude": [
+      "速力",
+      "柔軟"
+    ],
+    "base_stats": {
+      "adaptability": 6,
+      "balance": 6,
+      "flexibility": 11,
+      "focus": 5,
+      "intellect": 9,
+      "judgment": 5,
+      "mental": 8,
+      "reaction": 7,
+      "recovery": 6,
+      "speed": 15,
+      "stamina": 12,
+      "technique": 10
+    },
+    "description": "速さに優れた名馬",
+    "growth_rates": {
+      "flexibility": 1.1,
+      "intellect": 0.9,
+      "mental": 0.8,
+      "speed": 1.2,
+      "stamina": 1.0,
+      "technique": 0.9
+    },
+    "id": "horse_001",
+    "name": "疾風天陽"
+  }
+]

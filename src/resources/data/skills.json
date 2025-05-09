@@ -1,0 +1,93 @@
+[
+  {
+    "category_tags": [
+      "精神系",
+      "展開系"
+    ],
+    "condition": {
+      "section": "middle",
+      "trigger": "always"
+    },
+    "description": "中盤、精神が安定して展開を読む力が強まる",
+    "effect": {
+      "bonus_type": "control",
+      "timing": "middle",
+      "value": 10
+    },
+    "id": "skill_001",
+    "name": "静心制圧",
+    "progress_threshold": 5,
+    "required_training": [
+      "精神",
+      "展開"
+    ]
+  },
+  {
+    "category_tags": [
+      "精神系",
+      "持久系"
+    ],
+    "condition": {
+      "section": "final",
+      "trigger": "low_stamina"
+    },
+    "description": "終盤で集中を保ちつつスタミナ消費を抑える",
+    "effect": {
+      "bonus_type": "stamina",
+      "timing": "final",
+      "value": 12
+    },
+    "id": "skill_002",
+    "name": "心身統合",
+    "progress_threshold": 5,
+    "required_training": [
+      "精神",
+      "持久"
+    ]
+  },
+  {
+    "category_tags": [
+      "速力系"
+    ],
+    "condition": {
+      "position": "mid",
+      "section": "final",
+      "trigger": "when_losing"
+    },
+    "description": "終盤、静かに加速し順位を上げやすくなる",
+    "effect": {
+      "bonus_type": "speed",
+      "timing": "final",
+      "value": 15
+    },
+    "id": "skill_003",
+    "name": "無音疾風",
+    "progress_threshold": 5,
+    "required_training": [
+      "速力",
+      "技術"
+    ]
+  },
+  {
+    "category_tags": [
+      "柔軟系"
+    ],
+    "condition": {
+      "section": "early",
+      "trigger": "always"
+    },
+    "description": "スタート時、柔軟な動きで有利な位置を取る",
+    "effect": {
+      "bonus_type": "control",
+      "timing": "start",
+      "value": 8
+    },
+    "id": "skill_004",
+    "name": "柔式転身",
+    "progress_threshold": 5,
+    "required_training": [
+      "柔軟",
+      "精神"
+    ]
+  }
+]
