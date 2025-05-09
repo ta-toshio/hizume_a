@@ -42,7 +42,7 @@ offset_right = 300.0
 offset_bottom = 220.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 30
 
 [node name="TitleLabel" type="Label" parent="VBoxContainer"]
 layout_mode = 2
@@ -51,7 +51,7 @@ theme_override_colors/font_shadow_color = Color(0.117647, 0.0588235, 0.211765, 0
 theme_override_constants/shadow_offset_x = 3
 theme_override_constants/shadow_offset_y = 3
 theme_override_constants/shadow_outline_size = 2
-theme_override_font_sizes/font_size = 56
+theme_override_font_sizes/font_size = 64
 text = "チャクラと武道の馬育成"
 horizontal_alignment = 1
 
@@ -61,7 +61,7 @@ theme_override_colors/font_color = Color(0.862745, 0.701961, 0.956863, 1)
 theme_override_colors/font_shadow_color = Color(0.117647, 0.0588235, 0.211765, 0.784314)
 theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 28
+theme_override_font_sizes/font_size = 40
 text = "～導きの騎手～"
 horizontal_alignment = 1
 
@@ -70,47 +70,47 @@ custom_minimum_size = Vector2(0, 60)
 layout_mode = 2
 
 [node name="StartButton" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(250, 60)
+custom_minimum_size = Vector2(320, 80)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_colors/font_hover_color = Color(1, 0.921569, 0.690196, 1)
 theme_override_colors/font_color = Color(0.937255, 0.921569, 0.839216, 1)
 theme_override_colors/font_pressed_color = Color(1, 0.921569, 0.690196, 1)
-theme_override_font_sizes/font_size = 28
+theme_override_font_sizes/font_size = 40
 text = "育成開始"
 
 [node name="SkillButton" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(250, 60)
+custom_minimum_size = Vector2(320, 80)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_colors/font_hover_color = Color(1, 0.921569, 0.690196, 1)
 theme_override_colors/font_color = Color(0.937255, 0.921569, 0.839216, 1)
 theme_override_colors/font_pressed_color = Color(1, 0.921569, 0.690196, 1)
-theme_override_font_sizes/font_size = 28
+theme_override_font_sizes/font_size = 40
 text = "スキル図鑑"
 
 [node name="RecordsButton" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(250, 60)
+custom_minimum_size = Vector2(320, 80)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_colors/font_hover_color = Color(1, 0.921569, 0.690196, 1)
 theme_override_colors/font_color = Color(0.937255, 0.921569, 0.839216, 1)
 theme_override_colors/font_pressed_color = Color(1, 0.921569, 0.690196, 1)
-theme_override_font_sizes/font_size = 28
+theme_override_font_sizes/font_size = 40
 text = "育成記録"
 
 [node name="Spacer2" type="Control" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 10)
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
 [node name="ExitButton" type="Button" parent="VBoxContainer"]
-custom_minimum_size = Vector2(200, 50)
+custom_minimum_size = Vector2(240, 60)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_colors/font_hover_color = Color(1, 0.921569, 0.690196, 1)
 theme_override_colors/font_color = Color(0.780392, 0.776471, 0.741176, 1)
 theme_override_colors/font_pressed_color = Color(1, 0.921569, 0.690196, 1)
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 32
 text = "終了"
 
 [node name="VersionLabel" type="Label" parent="."]
@@ -127,6 +127,7 @@ offset_bottom = -20.0
 grow_horizontal = 0
 grow_vertical = 0
 theme_override_colors/font_color = Color(0.780392, 0.776471, 0.741176, 1)
+theme_override_font_sizes/font_size = 24
 text = "Ver 0.1.0"
 horizontal_alignment = 2
 

@@ -38,7 +38,7 @@ theme_override_constants/separation = 20
 
 [node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 36
+theme_override_font_sizes/font_size = 48
 text = "装備選択"
 horizontal_alignment = 1
 
@@ -48,6 +48,7 @@ layout_mode = 2
 [node name="CategoryTabs" type="TabContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_font_sizes/font_size = 32
 
 [node name="騎手" type="VBoxContainer" parent="MarginContainer/VBoxContainer/CategoryTabs"]
 layout_mode = 2
@@ -90,12 +91,13 @@ layout_mode = 2
 
 [node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentGrid/EquipmentItemTemplate/MarginContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 28
 text = "装備名"
 horizontal_alignment = 1
 
 [node name="RarityLabel" type="Label" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentGrid/EquipmentItemTemplate/MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 12
+theme_override_font_sizes/font_size = 24
 text = "SSR"
 horizontal_alignment = 1
 
@@ -127,12 +129,12 @@ layout_mode = 2
 [node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel/PanelContainer/MarginContainer/VBoxContainer/NameContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 40
 text = "装備名"
 
 [node name="RarityLabel" type="Label" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel/PanelContainer/MarginContainer/VBoxContainer/NameContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 32
 text = "SSR"
 horizontal_alignment = 2
 
@@ -141,6 +143,7 @@ layout_mode = 2
 
 [node name="DescriptionLabel" type="Label" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "装備の効果や説明文が表示されます。"
 autowrap_mode = 3
 
@@ -149,7 +152,7 @@ layout_mode = 2
 
 [node name="EffectsLabel" type="Label" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 32
 text = "効果"
 
 [node name="EffectsContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel/PanelContainer/MarginContainer/VBoxContainer"]
@@ -157,10 +160,12 @@ layout_mode = 2
 
 [node name="Effect1" type="Label" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel/PanelContainer/MarginContainer/VBoxContainer/EffectsContainer"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 28
 text = "• 速力 +10"
 
 [node name="Effect2" type="Label" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel/PanelContainer/MarginContainer/VBoxContainer/EffectsContainer"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 28
 text = "• 技術トレーニング効果 +15%"
 
 [node name="HSeparator3" type="HSeparator" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel/PanelContainer/MarginContainer/VBoxContainer"]
@@ -168,7 +173,7 @@ layout_mode = 2
 
 [node name="RelatedSkillsLabel" type="Label" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel/PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 32
 text = "関連スキル"
 
 [node name="RelatedSkillsContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel/PanelContainer/MarginContainer/VBoxContainer"]
@@ -176,12 +181,13 @@ layout_mode = 2
 
 [node name="Skill1" type="Label" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel/PanelContainer/MarginContainer/VBoxContainer/RelatedSkillsContainer"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 28
 text = "• 一気の極み"
 
 [node name="EquipButton" type="Button" parent="MarginContainer/VBoxContainer/ContentContainer/EquipmentDetailPanel"]
-custom_minimum_size = Vector2(0, 50)
+custom_minimum_size = Vector2(0, 70)
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 40
 disabled = true
 text = "この装備を選択"
 
@@ -193,9 +199,9 @@ layout_mode = 2
 alignment = 1
 
 [node name="BackButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonContainer"]
-custom_minimum_size = Vector2(150, 50)
+custom_minimum_size = Vector2(200, 70)
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 32
 text = "戻る"
 
 [node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer/ButtonContainer"]
@@ -203,8 +209,9 @@ custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 
 [node name="NextButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonContainer"]
-custom_minimum_size = Vector2(150, 50)
+custom_minimum_size = Vector2(200, 70)
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
+size_flags_horizontal = 10
+theme_override_font_sizes/font_size = 32
 disabled = true
-text = "トレーニング開始" 
+text = "次へ" 

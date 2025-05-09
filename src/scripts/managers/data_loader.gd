@@ -337,6 +337,14 @@ func _save_json_file(file_path: String, data: Array) -> void:
 	else:
 		print("エラー: ファイルを保存できませんでした: ", file_path)
 
+# 指定されたIDのスキルデータを取得
+func get_skill_data(skill_id: String) -> Dictionary:
+	if _skills_data.has(skill_id):
+		return _skills_data[skill_id]
+	else:
+		print("警告: スキルデータが見つかりません: ", skill_id)
+		return {}
+
 # データファイルの存在確認
 func _check_data_files_exist() -> bool:
 	var file_access = FileAccess.open("res://resources/data/horses.json", FileAccess.READ)

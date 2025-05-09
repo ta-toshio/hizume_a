@@ -380,15 +380,26 @@ func _setup_available_skills() -> void:
 	for equip_category in current_equipment:
 		var equipment = current_equipment[equip_category]
 		for skill_id in equipment.associated_skill_ids:
-			# ここでは単純な実装。実際には外部データからの読み込みが必要
-			var skill = Skill.new()
-			skill.id = skill_id
-			skill.name = "仮スキル" + skill_id  # 実際にはデータベースから
-			skill.description = "このスキルの説明文"
-			skill.required_training = [equipment.related_training]
-			# 他のスキル情報も設定
+			# DataLoaderからスキルデータを取得
+			var skill_data = DataLoader.get_instance().get_skill_data(skill_id)
 			
-			available_skills.append(skill)
+			if skill_data:
+				# Skillオブジェクトを作成（_load_from_dictで型変換も行われる）
+				var skill = Skill.new(skill_data)
+				available_skills.append(skill)
+			else:
+				# データが見つからない場合の簡易作成（バックアップとして）
+				var skill = Skill.new()
+				skill.id = skill_id
+				skill.name = "仮スキル" + skill_id
+				skill.description = "このスキルの説明文"
+				
+				# 型付き配列を正しく作成
+				var training_categories: Array[String] = []
+				training_categories.append(equipment.related_training)
+				skill.required_training = training_categories
+				
+				available_skills.append(skill)
 
 # 育成終了判定
 func is_training_complete() -> bool:

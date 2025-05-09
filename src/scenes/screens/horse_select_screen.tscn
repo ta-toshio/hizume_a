@@ -27,18 +27,18 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 40
-theme_override_constants/margin_top = 40
-theme_override_constants/margin_right = 40
-theme_override_constants/margin_bottom = 40
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 25
 
 [node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 36
+theme_override_font_sizes/font_size = 48
 text = "馬選択"
 horizontal_alignment = 1
 
@@ -56,6 +56,7 @@ size_flags_stretch_ratio = 0.4
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/HorseList"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "利用可能な馬"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/HorseList"]
@@ -70,6 +71,7 @@ size_flags_vertical = 3
 [node name="HorseItemTemplate" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/HorseList/ScrollContainer/VBoxContainer"]
 visible = false
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "疾風天陽"
 alignment = 0
 
@@ -82,15 +84,17 @@ size_flags_horizontal = 3
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/HorseDetails"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "詳細情報"
 
 [node name="NameLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/HorseDetails"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 40
 text = "疾風天陽"
 
 [node name="DescriptionLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/HorseDetails"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "速さに優れた名馬"
 autowrap_mode = 3
 
@@ -99,58 +103,73 @@ layout_mode = 2
 
 [node name="StatsLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/HorseDetails"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "初期ステータス"
 
 [node name="StatsGrid" type="GridContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/HorseDetails"]
 layout_mode = 2
+theme_override_constants/h_separation = 20
+theme_override_constants/v_separation = 10
 columns = 2
 
 [node name="SpeedLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/HorseDetails/StatsGrid"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 text = "速力:"
 
 [node name="SpeedValue" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/HorseDetails/StatsGrid"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 text = "15"
 
 [node name="StaminaLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/HorseDetails/StatsGrid"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 text = "持久力:"
 
 [node name="StaminaValue" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/HorseDetails/StatsGrid"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 text = "12"
 
 [node name="TechniqueLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/HorseDetails/StatsGrid"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 text = "技術:"
 
 [node name="TechniqueValue" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/HorseDetails/StatsGrid"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 text = "10"
 
 [node name="MentalLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/HorseDetails/StatsGrid"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 text = "精神:"
 
 [node name="MentalValue" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/HorseDetails/StatsGrid"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 text = "8"
 
 [node name="FlexibilityLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/HorseDetails/StatsGrid"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 text = "柔軟性:"
 
 [node name="FlexibilityValue" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/HorseDetails/StatsGrid"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 text = "11"
 
 [node name="IntellectLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/HorseDetails/StatsGrid"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 text = "展開力:"
 
 [node name="IntellectValue" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/HorseDetails/StatsGrid"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 24
 text = "9"
 
 [node name="HSeparator2" type="HSeparator" parent="MarginContainer/VBoxContainer/HBoxContainer/HorseDetails"]
@@ -158,6 +177,7 @@ layout_mode = 2
 
 [node name="AptitudeLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/HorseDetails"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 32
 text = "得意カテゴリ: 速力、柔軟"
 
 [node name="Spacer" type="Control" parent="MarginContainer/VBoxContainer/HBoxContainer/HorseDetails"]
@@ -165,9 +185,10 @@ layout_mode = 2
 size_flags_vertical = 3
 
 [node name="SelectButton" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/HorseDetails"]
+custom_minimum_size = Vector2(0, 80)
 layout_mode = 2
-size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 24
+size_flags_vertical = 10
+theme_override_font_sizes/font_size = 40
 text = "この馬で育成開始"
 
 [node name="HSeparator2" type="HSeparator" parent="MarginContainer/VBoxContainer"]
@@ -178,7 +199,7 @@ layout_mode = 2
 alignment = 1
 
 [node name="BackButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonContainer"]
-custom_minimum_size = Vector2(150, 50)
+custom_minimum_size = Vector2(200, 60)
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 32
 text = "戻る" 

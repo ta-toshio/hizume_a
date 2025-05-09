@@ -1,0 +1,26 @@
+[gd_resource type="Theme" format=3]
+
+[resource]
+default_font_size = 32
+Button/constants/minimum_size = 60
+Button/font_sizes/font_size = 32
+Button/font_sizes/large_font_size = 40
+Button/font_sizes/normal_font_size = 32
+GridContainer/constants/h_separation = 20
+GridContainer/constants/v_separation = 20
+HBoxContainer/constants/separation = 20
+ItemList/font_sizes/font_size = 32
+Label/font_sizes/font_size = 32
+Label/font_sizes/font_size_large = 48
+Label/font_sizes/font_size_medium = 40
+Label/font_sizes/font_size_small = 24
+Label/font_sizes/font_size_xl = 64
+Label/font_sizes/header_font_size = 40
+Label/font_sizes/title_font_size = 48
+LineEdit/font_sizes/font_size = 32
+MarginContainer/constants/margin_bottom = 40
+MarginContainer/constants/margin_left = 40
+MarginContainer/constants/margin_right = 40
+MarginContainer/constants/margin_top = 40
+OptionButton/font_sizes/font_size = 32
+VBoxContainer/constants/separation = 20
