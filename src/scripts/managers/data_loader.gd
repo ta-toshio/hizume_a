@@ -1,5 +1,10 @@
 extends Node
 
+# スクリプト参照
+const HorseScript = preload("res://scripts/data/horse.gd")
+const EquipmentScript = preload("res://scripts/data/equipment.gd")
+const SkillScript = preload("res://scripts/data/skill.gd")
+
 # シングルトン設定
 static var _instance = null
 static func get_instance():
@@ -69,57 +74,57 @@ func _load_json_file(file_path: String) -> Array:
 	return []
 
 # 馬オブジェクトを取得
-func get_horse(horse_id: String) -> Horse:
+func get_horse(horse_id: String):
 	if _horses_data.has(horse_id):
-		return Horse.new(_horses_data[horse_id])
+		return HorseScript.new(_horses_data[horse_id])
 	
 	# 存在しないIDの場合はダミーを返す
 	print("警告：存在しない馬ID: ", horse_id)
-	return Horse.new()
+	return HorseScript.new()
 
 # 利用可能な全馬のIDを取得
-func get_all_horse_ids() -> Array[String]:
-	var ids: Array[String] = []
+func get_all_horse_ids():
+	var ids = []
 	for id in _horses_data.keys():
 		ids.append(id)
 	return ids
 
 # 利用可能な全装備のIDを取得
-func get_all_equipment_ids() -> Array[String]:
-	var ids: Array[String] = []
+func get_all_equipment_ids():
+	var ids = []
 	for id in _equipment_data.keys():
 		ids.append(id)
 	return ids
 
 # 装備オブジェクトを取得
-func get_equipment(equipment_id: String) -> Equipment:
+func get_equipment(equipment_id: String):
 	if _equipment_data.has(equipment_id):
-		return Equipment.new(_equipment_data[equipment_id])
+		return EquipmentScript.new(_equipment_data[equipment_id])
 	
 	# 存在しないIDの場合はダミーを返す
 	print("警告：存在しない装備ID: ", equipment_id)
-	return Equipment.new()
+	return EquipmentScript.new()
 
 # カテゴリ別の装備IDリストを取得
-func get_equipment_ids_by_category(category: String) -> Array[String]:
-	var ids: Array[String] = []
+func get_equipment_ids_by_category(category: String):
+	var ids = []
 	for id in _equipment_data.keys():
 		if _equipment_data[id].category == category:
 			ids.append(id)
 	return ids
 
 # スキルオブジェクトを取得
-func get_skill(skill_id: String) -> Skill:
+func get_skill(skill_id: String):
 	if _skills_data.has(skill_id):
-		return Skill.new(_skills_data[skill_id])
+		return SkillScript.new(_skills_data[skill_id])
 	
 	# 存在しないIDの場合はダミーを返す
 	print("警告：存在しないスキルID: ", skill_id)
-	return Skill.new()
+	return SkillScript.new()
 
 # 装備IDに関連付けられたスキルを取得
-func get_skills_for_equipment(equipment_id: String) -> Array[Skill]:
-	var skills: Array[Skill] = []
+func get_skills_for_equipment(equipment_id: String):
+	var skills = []
 	
 	if not _equipment_data.has(equipment_id):
 		return skills
@@ -128,7 +133,7 @@ func get_skills_for_equipment(equipment_id: String) -> Array[Skill]:
 	if equipment_data.has("associated_skill_ids"):
 		for skill_id in equipment_data.associated_skill_ids:
 			if _skills_data.has(skill_id):
-				skills.append(Skill.new(_skills_data[skill_id]))
+				skills.append(SkillScript.new(_skills_data[skill_id]))
 	
 	return skills
 

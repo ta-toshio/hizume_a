@@ -1,0 +1,362 @@
+[gd_scene load_steps=2 format=3 uid="uid://xxx"]
+
+[ext_resource type="Script" path="res://scripts/ui/race_screen.gd" id="1_12345"]
+
+[node name="RaceScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_12345")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="MainLayout" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="HeaderPanel" type="PanelContainer" parent="MarginContainer/MainLayout"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="HeaderContainer" type="HBoxContainer" parent="MarginContainer/MainLayout/HeaderPanel"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/MainLayout/HeaderPanel/HeaderContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 36
+text = "レース出走"
+horizontal_alignment = 1
+
+[node name="RaceInfoContainer" type="HBoxContainer" parent="MarginContainer/MainLayout/HeaderPanel/HeaderContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="RaceNameLabel" type="Label" parent="MarginContainer/MainLayout/HeaderPanel/HeaderContainer/RaceInfoContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "チャクラカップ"
+
+[node name="RaceDistanceLabel" type="Label" parent="MarginContainer/MainLayout/HeaderPanel/HeaderContainer/RaceInfoContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "1600m"
+
+[node name="RaceTrackLabel" type="Label" parent="MarginContainer/MainLayout/HeaderPanel/HeaderContainer/RaceInfoContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "芝コース"
+
+[node name="ContentContainer" type="HBoxContainer" parent="MarginContainer/MainLayout"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 15
+
+[node name="LeftPanel" type="PanelContainer" parent="MarginContainer/MainLayout/ContentContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel"]
+layout_mode = 2
+
+[node name="HorseInfoLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "愛馬情報"
+horizontal_alignment = 1
+
+[node name="HorseNameLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "馬名：風神雷神"
+
+[node name="HorseAgeLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "年齢：3歳"
+
+[node name="StatsContainer" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="StatsLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer/StatsContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "能力値"
+horizontal_alignment = 1
+
+[node name="StatGridContainer" type="GridContainer" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer/StatsContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 5
+columns = 2
+
+[node name="SpeedLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer/StatsContainer/StatGridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "速力："
+
+[node name="SpeedValue" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer/StatsContainer/StatGridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "80"
+
+[node name="StaminaLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer/StatsContainer/StatGridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "持久力："
+
+[node name="StaminaValue" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer/StatsContainer/StatGridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "70"
+
+[node name="TechniqueLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer/StatsContainer/StatGridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "技術："
+
+[node name="TechniqueValue" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer/StatsContainer/StatGridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "65"
+
+[node name="IntellectLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer/StatsContainer/StatGridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "展開力："
+
+[node name="IntellectValue" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer/StatsContainer/StatGridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "60"
+
+[node name="EquipmentContainer" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="EquipmentLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer/EquipmentContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "装備情報"
+horizontal_alignment = 1
+
+[node name="RiderLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer/EquipmentContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "騎手：風水使い"
+
+[node name="HorseEquipLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer/EquipmentContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "装備：風神具足"
+
+[node name="CenterPanel" type="PanelContainer" parent="MarginContainer/MainLayout/ContentContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.7
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel"]
+layout_mode = 2
+
+[node name="RaceStatusContainer" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/VBoxContainer"]
+layout_mode = 2
+
+[node name="PhaseLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/VBoxContainer/RaceStatusContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "出走直前"
+horizontal_alignment = 1
+
+[node name="RaceTrackContainer" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TrackSegmentsContainer" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/VBoxContainer/RaceTrackContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="StartSegment" type="HBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/VBoxContainer/RaceTrackContainer/TrackSegmentsContainer"]
+layout_mode = 2
+
+[node name="SegmentLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/VBoxContainer/RaceTrackContainer/TrackSegmentsContainer/StartSegment"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 22
+text = "発走"
+
+[node name="PositionLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/VBoxContainer/RaceTrackContainer/TrackSegmentsContainer/StartSegment"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "位置：--"
+
+[node name="FirstSegment" type="HBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/VBoxContainer/RaceTrackContainer/TrackSegmentsContainer"]
+layout_mode = 2
+
+[node name="SegmentLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/VBoxContainer/RaceTrackContainer/TrackSegmentsContainer/FirstSegment"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 22
+text = "序盤"
+
+[node name="PositionLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/VBoxContainer/RaceTrackContainer/TrackSegmentsContainer/FirstSegment"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "位置：--"
+
+[node name="MiddleSegment" type="HBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/VBoxContainer/RaceTrackContainer/TrackSegmentsContainer"]
+layout_mode = 2
+
+[node name="SegmentLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/VBoxContainer/RaceTrackContainer/TrackSegmentsContainer/MiddleSegment"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 22
+text = "中盤"
+
+[node name="PositionLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/VBoxContainer/RaceTrackContainer/TrackSegmentsContainer/MiddleSegment"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "位置：--"
+
+[node name="FinalSegment" type="HBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/VBoxContainer/RaceTrackContainer/TrackSegmentsContainer"]
+layout_mode = 2
+
+[node name="SegmentLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/VBoxContainer/RaceTrackContainer/TrackSegmentsContainer/FinalSegment"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 22
+text = "終盤"
+
+[node name="PositionLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/VBoxContainer/RaceTrackContainer/TrackSegmentsContainer/FinalSegment"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "位置：--"
+
+[node name="GoalSegment" type="HBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/VBoxContainer/RaceTrackContainer/TrackSegmentsContainer"]
+layout_mode = 2
+
+[node name="SegmentLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/VBoxContainer/RaceTrackContainer/TrackSegmentsContainer/GoalSegment"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 22
+text = "ゴール"
+
+[node name="PositionLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/VBoxContainer/RaceTrackContainer/TrackSegmentsContainer/GoalSegment"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "位置：--"
+
+[node name="ResultPanel" type="PanelContainer" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/VBoxContainer"]
+visible = false
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/VBoxContainer/ResultPanel"]
+layout_mode = 2
+alignment = 1
+
+[node name="ResultTitleLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/VBoxContainer/ResultPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "レース結果"
+horizontal_alignment = 1
+
+[node name="ResultPositionLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/VBoxContainer/ResultPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 42
+text = "3着"
+horizontal_alignment = 1
+
+[node name="ResultScoreLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/VBoxContainer/ResultPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "パフォーマンス：756pt"
+horizontal_alignment = 1
+
+[node name="RightPanel" type="PanelContainer" parent="MarginContainer/MainLayout/ContentContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.4
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/RightPanel"]
+layout_mode = 2
+
+[node name="SkillTitleLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "発動スキル"
+horizontal_alignment = 1
+
+[node name="SkillLogContainer" type="ScrollContainer" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SkillLogList" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/VBoxContainer/SkillLogContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="LogEventTemplate" type="PanelContainer" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/VBoxContainer/SkillLogContainer/SkillLogList"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/VBoxContainer/SkillLogContainer/SkillLogList/LogEventTemplate"]
+layout_mode = 2
+
+[node name="SkillNameLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/VBoxContainer/SkillLogContainer/SkillLogList/LogEventTemplate/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.160784, 0.552941, 0.94902, 1)
+theme_override_font_sizes/font_size = 22
+text = "疾風迅速"
+
+[node name="SkillEffectLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/VBoxContainer/SkillLogContainer/SkillLogList/LogEventTemplate/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "序盤の速度が上昇！"
+
+[node name="SkillPointsLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/VBoxContainer/SkillLogContainer/SkillLogList/LogEventTemplate/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.160784, 0.839216, 0.360784, 1)
+theme_override_font_sizes/font_size = 20
+text = "+120ポイント"
+
+[node name="BottomButtonsContainer" type="HBoxContainer" parent="MarginContainer/MainLayout"]
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="StartRaceButton" type="Button" parent="MarginContainer/MainLayout/BottomButtonsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 24
+text = "レース開始"
+
+[node name="NextSegmentButton" type="Button" parent="MarginContainer/MainLayout/BottomButtonsContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 24
+text = "次の区間へ"
+
+[node name="BackToTrainingButton" type="Button" parent="MarginContainer/MainLayout/BottomButtonsContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 24
+text = "トレーニングに戻る" 

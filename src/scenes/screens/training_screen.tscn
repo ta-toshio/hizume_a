@@ -1,0 +1,550 @@
+[gd_scene load_steps=2 format=3 uid="uid://bqqy0jxu12o4a"]
+
+[ext_resource type="Script" path="res://scripts/ui/training_screen.gd" id="1_jqnck"]
+
+[node name="TrainingScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_jqnck")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.227451, 0.231373, 0.372549, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="MainLayout" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="TopPanel" type="PanelContainer" parent="MarginContainer/MainLayout"]
+layout_mode = 2
+
+[node name="TopBarContainer" type="HBoxContainer" parent="MarginContainer/MainLayout/TopPanel"]
+layout_mode = 2
+theme_override_constants/separation = 30
+alignment = 1
+
+[node name="MonthLabel" type="Label" parent="MarginContainer/MainLayout/TopPanel/TopBarContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "3歳4月"
+horizontal_alignment = 1
+
+[node name="VSeparator" type="VSeparator" parent="MarginContainer/MainLayout/TopPanel/TopBarContainer"]
+layout_mode = 2
+
+[node name="TurnLabel" type="Label" parent="MarginContainer/MainLayout/TopPanel/TopBarContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+text = "残り33ターン"
+horizontal_alignment = 1
+
+[node name="VSeparator2" type="VSeparator" parent="MarginContainer/MainLayout/TopPanel/TopBarContainer"]
+layout_mode = 2
+
+[node name="ChakraFlowContainer" type="HBoxContainer" parent="MarginContainer/MainLayout/TopPanel/TopBarContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="ChakraLabel" type="Label" parent="MarginContainer/MainLayout/TopPanel/TopBarContainer/ChakraFlowContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "今月のチャクラ気配："
+horizontal_alignment = 1
+
+[node name="CategoryLabel" type="Label" parent="MarginContainer/MainLayout/TopPanel/TopBarContainer/ChakraFlowContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.6, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "速力"
+horizontal_alignment = 1
+
+[node name="ContentContainer" type="HBoxContainer" parent="MarginContainer/MainLayout"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 20
+
+[node name="LeftPanel" type="PanelContainer" parent="MarginContainer/MainLayout/ContentContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.3
+
+[node name="StatsScrollContainer" type="ScrollContainer" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="StatsContainer" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 20
+
+[node name="StatsLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "ステータス"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer"]
+layout_mode = 2
+
+[node name="StatGridContainer" type="GridContainer" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+columns = 2
+
+[node name="Speed" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer/StatGridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer/StatGridContainer/Speed"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "速力"
+horizontal_alignment = 1
+
+[node name="Value" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer/StatGridContainer/Speed"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "70"
+horizontal_alignment = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer/StatGridContainer/Speed"]
+layout_mode = 2
+value = 70.0
+
+[node name="Stamina" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer/StatGridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer/StatGridContainer/Stamina"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "持久力"
+horizontal_alignment = 1
+
+[node name="Value" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer/StatGridContainer/Stamina"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "65"
+horizontal_alignment = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer/StatGridContainer/Stamina"]
+layout_mode = 2
+value = 65.0
+
+[node name="Technique" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer/StatGridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer/StatGridContainer/Technique"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "技術"
+horizontal_alignment = 1
+
+[node name="Value" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer/StatGridContainer/Technique"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "60"
+horizontal_alignment = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer/StatGridContainer/Technique"]
+layout_mode = 2
+value = 60.0
+
+[node name="Intellect" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer/StatGridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer/StatGridContainer/Intellect"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "展開力"
+horizontal_alignment = 1
+
+[node name="Value" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer/StatGridContainer/Intellect"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "55"
+horizontal_alignment = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer/StatGridContainer/Intellect"]
+layout_mode = 2
+value = 55.0
+
+[node name="Flexibility" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer/StatGridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer/StatGridContainer/Flexibility"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "柔軟性"
+horizontal_alignment = 1
+
+[node name="Value" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer/StatGridContainer/Flexibility"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "60"
+horizontal_alignment = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer/StatGridContainer/Flexibility"]
+layout_mode = 2
+value = 60.0
+
+[node name="Mental" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer/StatGridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer/StatGridContainer/Mental"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "精神力"
+horizontal_alignment = 1
+
+[node name="Value" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer/StatGridContainer/Mental"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "50"
+horizontal_alignment = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer/StatGridContainer/Mental"]
+layout_mode = 2
+value = 50.0
+
+[node name="HSeparator2" type="HSeparator" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer"]
+layout_mode = 2
+
+[node name="FatigueContainer" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer"]
+layout_mode = 2
+
+[node name="FatigueLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer/FatigueContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "疲労度: 25"
+horizontal_alignment = 1
+
+[node name="FatigueBar" type="ProgressBar" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer/FatigueContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+value = 25.0
+
+[node name="SuccessRateLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer/FatigueContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.8, 0.2, 1)
+theme_override_font_sizes/font_size = 20
+text = "成功率: 100%"
+horizontal_alignment = 1
+
+[node name="HSeparator3" type="HSeparator" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer"]
+layout_mode = 2
+
+[node name="FamiliarityLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "装備熟度"
+horizontal_alignment = 1
+
+[node name="RiderFamiliarityContainer" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer/RiderFamiliarityContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "騎手: 初心"
+horizontal_alignment = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer/RiderFamiliarityContainer"]
+layout_mode = 2
+value = 10.0
+
+[node name="HorseFamiliarityContainer" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer/HorseFamiliarityContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "装備: 初心"
+horizontal_alignment = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer/HorseFamiliarityContainer"]
+layout_mode = 2
+value = 15.0
+
+[node name="ManualFamiliarityContainer" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer/ManualFamiliarityContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "指南書: 初心"
+horizontal_alignment = 1
+
+[node name="ProgressBar" type="ProgressBar" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer/ManualFamiliarityContainer"]
+layout_mode = 2
+value = 5.0
+
+[node name="CenterPanel" type="PanelContainer" parent="MarginContainer/MainLayout/ContentContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.5
+
+[node name="TrainingScrollContainer" type="ScrollContainer" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel"]
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="TrainingContainer" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/TrainingScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 15
+
+[node name="TrainingLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/TrainingScrollContainer/TrainingContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "トレーニング選択"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/TrainingScrollContainer/TrainingContainer"]
+layout_mode = 2
+
+[node name="TrainingItemsContainer" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/TrainingScrollContainer/TrainingContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="TrainingCardTemplate" type="PanelContainer" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/TrainingScrollContainer/TrainingContainer/TrainingItemsContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/TrainingScrollContainer/TrainingContainer/TrainingItemsContainer/TrainingCardTemplate"]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/TrainingScrollContainer/TrainingContainer/TrainingItemsContainer/TrainingCardTemplate/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HeaderContainer" type="HBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/TrainingScrollContainer/TrainingContainer/TrainingItemsContainer/TrainingCardTemplate/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="NameLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/TrainingScrollContainer/TrainingContainer/TrainingItemsContainer/TrainingCardTemplate/MarginContainer/VBoxContainer/HeaderContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 20
+text = "疾光修練"
+
+[node name="CategoryLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/TrainingScrollContainer/TrainingContainer/TrainingItemsContainer/TrainingCardTemplate/MarginContainer/VBoxContainer/HeaderContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.776471, 0.521569, 0.945098, 1)
+theme_override_font_sizes/font_size = 18
+text = "【速力】"
+horizontal_alignment = 2
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/TrainingScrollContainer/TrainingContainer/TrainingItemsContainer/TrainingCardTemplate/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="StatsContainer" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/TrainingScrollContainer/TrainingContainer/TrainingItemsContainer/TrainingCardTemplate/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="MainStatLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/TrainingScrollContainer/TrainingContainer/TrainingItemsContainer/TrainingCardTemplate/MarginContainer/VBoxContainer/StatsContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "速力 +6"
+
+[node name="SubStatLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/TrainingScrollContainer/TrainingContainer/TrainingItemsContainer/TrainingCardTemplate/MarginContainer/VBoxContainer/StatsContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "反応 +2"
+
+[node name="FatigueContainer" type="HBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/TrainingScrollContainer/TrainingContainer/TrainingItemsContainer/TrainingCardTemplate/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="FatigueLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/TrainingScrollContainer/TrainingContainer/TrainingItemsContainer/TrainingCardTemplate/MarginContainer/VBoxContainer/FatigueContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.87451, 0.564706, 0.564706, 1)
+text = "疲労 +30"
+
+[node name="ResonanceContainer" type="HBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/TrainingScrollContainer/TrainingContainer/TrainingItemsContainer/TrainingCardTemplate/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ResonanceLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/TrainingScrollContainer/TrainingContainer/TrainingItemsContainer/TrainingCardTemplate/MarginContainer/VBoxContainer/ResonanceContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.466667, 0.580392, 0.94902, 1)
+text = "共鳴候補"
+
+[node name="SelectedIndicator" type="ColorRect" parent="MarginContainer/MainLayout/ContentContainer/CenterPanel/TrainingScrollContainer/TrainingContainer/TrainingItemsContainer/TrainingCardTemplate"]
+visible = false
+layout_mode = 2
+color = Color(0.290196, 0.501961, 0.847059, 0.270588)
+
+[node name="RightPanel" type="PanelContainer" parent="MarginContainer/MainLayout/ContentContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.4
+
+[node name="TrainingDetailContainer" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/RightPanel"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="DetailLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/TrainingDetailContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "詳細情報"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/TrainingDetailContainer"]
+layout_mode = 2
+
+[node name="SelectedTrainingDetailsPanel" type="PanelContainer" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/TrainingDetailContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/TrainingDetailContainer/SelectedTrainingDetailsPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 15
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 15
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/TrainingDetailContainer/SelectedTrainingDetailsPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="NameContainer" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/TrainingDetailContainer/SelectedTrainingDetailsPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/TrainingDetailContainer/SelectedTrainingDetailsPanel/MarginContainer/VBoxContainer/NameContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "疾光修練"
+horizontal_alignment = 1
+
+[node name="CategoryLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/TrainingDetailContainer/SelectedTrainingDetailsPanel/MarginContainer/VBoxContainer/NameContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.776471, 0.521569, 0.945098, 1)
+theme_override_font_sizes/font_size = 24
+text = "【速力】"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/TrainingDetailContainer/SelectedTrainingDetailsPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="EffectsLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/TrainingDetailContainer/SelectedTrainingDetailsPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "効果"
+
+[node name="EffectsContainer" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/TrainingDetailContainer/SelectedTrainingDetailsPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="MainStatEffect" type="Label" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/TrainingDetailContainer/SelectedTrainingDetailsPanel/MarginContainer/VBoxContainer/EffectsContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "速力: +6"
+
+[node name="SubStatEffect" type="Label" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/TrainingDetailContainer/SelectedTrainingDetailsPanel/MarginContainer/VBoxContainer/EffectsContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "反応: +2"
+
+[node name="FatigueEffect" type="Label" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/TrainingDetailContainer/SelectedTrainingDetailsPanel/MarginContainer/VBoxContainer/EffectsContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.87451, 0.564706, 0.564706, 1)
+theme_override_font_sizes/font_size = 20
+text = "疲労: +30"
+
+[node name="HSeparator2" type="HSeparator" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/TrainingDetailContainer/SelectedTrainingDetailsPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ResonanceLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/TrainingDetailContainer/SelectedTrainingDetailsPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "共鳴状態"
+
+[node name="ResonanceContainer" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/TrainingDetailContainer/SelectedTrainingDetailsPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ResonanceStatusLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/TrainingDetailContainer/SelectedTrainingDetailsPanel/MarginContainer/VBoxContainer/ResonanceContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.466667, 0.580392, 0.94902, 1)
+theme_override_font_sizes/font_size = 20
+text = "チャクラ気配と一致"
+
+[node name="ResonanceChanceLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/TrainingDetailContainer/SelectedTrainingDetailsPanel/MarginContainer/VBoxContainer/ResonanceContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "共鳴率: 40%"
+
+[node name="FamiliarityLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/TrainingDetailContainer/SelectedTrainingDetailsPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "熟度獲得"
+
+[node name="FamiliarityContainer" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/TrainingDetailContainer/SelectedTrainingDetailsPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="FamiliarityEffectLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/TrainingDetailContainer/SelectedTrainingDetailsPanel/MarginContainer/VBoxContainer/FamiliarityContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "装備熟度: +10pt"
+
+[node name="FamiliarityReasonLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/TrainingDetailContainer/SelectedTrainingDetailsPanel/MarginContainer/VBoxContainer/FamiliarityContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.839216, 0.839216, 0.839216, 1)
+theme_override_font_sizes/font_size = 18
+text = "（カテゴリ一致ボーナス）"
+
+[node name="BottomButtonsContainer" type="HBoxContainer" parent="MarginContainer/MainLayout"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="TrainButton" type="Button" parent="MarginContainer/MainLayout/BottomButtonsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 24
+disabled = true
+text = "トレーニング実行"
+
+[node name="RestButton" type="Button" parent="MarginContainer/MainLayout/BottomButtonsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 24
+text = "休養"
+
+[node name="RaceButton" type="Button" parent="MarginContainer/MainLayout/BottomButtonsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 24
+disabled = true
+text = "レース出走"
+
+[node name="LogButton" type="Button" parent="MarginContainer/MainLayout/BottomButtonsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 24
+text = "ログ表示" 

@@ -213,8 +213,8 @@ func _on_next_button_pressed() -> void:
 		# トレーニング開始
 		game_manager.start_new_training(game_manager.current_horse, equipment_dict)
 		
-		# トレーニング画面へ遷移（未実装の場合はタイトルに戻る）
-		print("トレーニング画面は未実装です。タイトル画面に戻ります。")
-		get_tree().change_scene_to_file("res://scenes/screens/title_screen.tscn")
+		# トレーニング画面へ遷移
+		print("トレーニング画面へ遷移します")
+		get_tree().change_scene_to_file("res://scenes/screens/training_screen.tscn")
 	else:
 		print("エラー: GameManagerが見つかりません") 

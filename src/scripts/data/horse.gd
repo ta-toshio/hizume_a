@@ -7,8 +7,8 @@ extends Resource
 @export var description: String = ""
 
 # ステータス関連
-@export var base_stats: StatBlock
-@export var current_stats: StatBlock
+@export var base_stats = null
+@export var current_stats = null
 @export var growth_rates: Dictionary = {
 	"speed": 1.0,
 	"stamina": 1.0,
@@ -19,7 +19,7 @@ extends Resource
 }
 
 # 適性情報
-@export var aptitude: Array[String] = []  # 得意カテゴリ（例：速力、柔軟）
+@export var aptitude = []  # 得意カテゴリ（例：速力、柔軟）
 
 # 育成関連情報
 @export var fatigue: int = 0  # 疲労値（0-100）
@@ -29,8 +29,9 @@ extends Resource
 # 初期化
 func _init(horse_data: Dictionary = {}):
 	if horse_data.is_empty():
-		base_stats = StatBlock.new()
-		current_stats = StatBlock.new()
+		var stat_block_script = load("res://scripts/data/stat_block.gd")
+		base_stats = stat_block_script.new()
+		current_stats = stat_block_script.new()
 	else:
 		_load_from_dict(horse_data)
 
@@ -90,15 +91,16 @@ func _load_from_dict(data: Dictionary) -> void:
 		description = data.description
 	
 	# ステータス情報の読み込み
+	var stat_block_script = load("res://scripts/data/stat_block.gd")
 	if data.has("base_stats"):
-		base_stats = StatBlock.new(data.base_stats)
+		base_stats = stat_block_script.new(data.base_stats)
 	else:
-		base_stats = StatBlock.new()
+		base_stats = stat_block_script.new()
 		
 	if data.has("current_stats"):
-		current_stats = StatBlock.new(data.current_stats)
+		current_stats = stat_block_script.new(data.current_stats)
 	else:
-		current_stats = StatBlock.new(base_stats.to_dict())
+		current_stats = stat_block_script.new(base_stats.to_dict())
 	
 	if data.has("growth_rates"):
 		growth_rates = data.growth_rates
@@ -113,3 +115,48 @@ func _load_from_dict(data: Dictionary) -> void:
 		age_in_months = data.age_in_months
 	if data.has("training_count"):
 		training_count = data.training_count 
+
+# 現在のステータスを取得（安全なアクセス用）
+func get_current_stats():
+	if current_stats == null:
+		var stat_block_script = load("res://scripts/data/stat_block.gd")
+		current_stats = stat_block_script.new()
+	return current_stats
+
+# 現在のステータスを辞書形式で取得（安全なアクセス用）
+func get_current_stats_dict() -> Dictionary:
+	if current_stats == null:
+		var stat_block_script = load("res://scripts/data/stat_block.gd")
+		current_stats = stat_block_script.new()
+	return current_stats.to_dict()
+
+# 特定のステータス値を取得（安全なアクセス用）
+func get_stat_value(stat_name: String) -> int:
+	if current_stats == null:
+		var stat_block_script = load("res://scripts/data/stat_block.gd")
+		current_stats = stat_block_script.new()
+	return current_stats.get_stat(stat_name)
+
+# 特定のステータス値を設定（安全なアクセス用）
+func set_stat_value(stat_name: String, value: int) -> void:
+	if current_stats == null:
+		var stat_block_script = load("res://scripts/data/stat_block.gd")
+		current_stats = stat_block_script.new()
+	
+	# ステータスが存在するか確認し、存在する場合のみ値を設定
+	if current_stats.has_property(stat_name):
+		current_stats.set(stat_name, value)
+
+# 特定のステータス値を増加（安全なアクセス用）
+func increase_stat_value(stat_name: String, amount: int) -> void:
+	if current_stats == null:
+		var stat_block_script = load("res://scripts/data/stat_block.gd")
+		current_stats = stat_block_script.new()
+	current_stats.increase_stat(stat_name, amount)
+
+# 全ステータスの合計を計算して返す
+func get_total_stats() -> int:
+	if current_stats == null:
+		var stat_block_script = load("res://scripts/data/stat_block.gd")
+		current_stats = stat_block_script.new()
+	return current_stats.get_total_stats() 

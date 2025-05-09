@@ -1,35 +1,89 @@
 extends Node
 
+# クラスローダー
+const DataLoaderScript = preload("res://scripts/managers/data_loader.gd")
+
 # シングルトン設定
 static var _instance = null
 static func get_instance():
 	return _instance
 
 # ゲーム状態管理
-var current_horse: Horse = null
-var current_equipment: Dictionary = {}  # カテゴリごとの装備 {"rider": Equipment, "horse": Equipment, "manual": Equipment}
-var available_skills: Array[Skill] = []
-var unlocked_skills: Array[Skill] = []
+var current_horse = null
+var current_equipment: Dictionary = {}  # カテゴリごとの装備 {"rider": 装備オブジェクト, "horse": 装備オブジェクト, "manual": 装備オブジェクト}
+var available_skills = []
+var unlocked_skills = []
 
 # トレーニング状態
 var current_month: int = 0  # 現在の育成ターン（0-32）
+var current_age: int = 3    # 現在の年齢（3歳からスタート）
 var total_months: int = 33  # 育成期間（3歳4月〜5歳12月 = 33ヶ月）
 var chakra_flow_category: String = ""  # 当月のチャクラ気配カテゴリ
 var resonance_gauge: int = 0  # 補助ゲージ（0-5）
 var consecutive_category: Dictionary = {}  # 各カテゴリの連続選択回数
 
 # レース結果記録
-var race_records: Array[Dictionary] = []
+var race_records = []
 
 # 初期化
 func _ready():
 	_instance = self
 	
+	# デバッグ用に初期データを設定
+	if not current_horse:
+		# 馬のデータがない場合はダミーデータを作成
+		var horse_data = {
+			"id": "debug_horse",
+			"name": "風神雷神",
+			"current_stats": {
+				"speed": 70,
+				"stamina": 65,
+				"technique": 60,
+				"intellect": 55,
+				"flexibility": 60,
+				"mental": 50,
+				"reaction": 65,
+				"balance": 60,
+				"focus": 55,
+				"adaptability": 60,
+				"judgment": 55,
+				"recovery": 60
+			},
+			"fatigue": 25
+		}
+		var horse_script = load("res://scripts/data/horse.gd")
+		current_horse = horse_script.new(horse_data)
+		
+		# 装備も設定
+		current_equipment = {
+			"rider": _create_debug_equipment("rider", "風水使い", "speed"),
+			"horse": _create_debug_equipment("horse", "風神具足", "stamina"),
+			"manual": _create_debug_equipment("manual", "疾風の書", "technique")
+		}
+		
+		# チャクラ気配を設定
+		_determine_chakra_flow()
+
+# デバッグ用の装備作成ヘルパー関数
+func _create_debug_equipment(type: String, name: String, related_training: String):
+	var equip_data = {
+		"id": "debug_" + type,
+		"name": name,
+		"type": type,
+		"related_training": related_training,
+		"familiarity": 10,
+		"familiarity_level": 1,
+		"associated_skill_ids": ["skill_1", "skill_2"]
+	}
+	var equipment_script = load("res://scripts/data/equipment.gd")
+	return equipment_script.new(equip_data)
+
 # 新しい育成サイクルを開始
-func start_new_training(horse: Horse, equipments: Dictionary) -> void:
+func start_new_training(horse, equipments: Dictionary) -> void:
 	current_horse = horse
 	current_equipment = equipments
 	current_month = 0
+	current_age = 3  # 育成開始時は3歳
 	
 	# 初期スキル候補設定
 	_setup_available_skills()
@@ -43,6 +97,11 @@ func start_new_training(horse: Horse, equipments: Dictionary) -> void:
 # 月を進める
 func advance_month() -> void:
 	current_month += 1
+	
+	# 12ヶ月ごとに年齢を更新
+	if current_month > 0 and current_month % 12 == 0:
+		current_age += 1
+	
 	current_horse.advance_month()
 	
 	# 新しい月のチャクラ気配を決定
@@ -64,9 +123,24 @@ func execute_training(training_category: String) -> Dictionary:
 		"log_messages": []
 	}
 	
+	# 日本語カテゴリ名を英語に変換
+	var category = training_category
+	match training_category:
+		"速力": category = "speed"
+		"柔軟": category = "flexibility"
+		"精神": category = "mental"
+		"技術": category = "technique" 
+		"展開": category = "intellect"
+		"持久": category = "stamina"
+	
+	print("GameManager: トレーニングカテゴリ = " + category + " (元: " + training_category + ")")
+	print("DEBUG: 訓練前の馬ステータス = " + str(current_horse.get_current_stats_dict()))
+	
 	# 1. 疲労値加算
-	var fatigue_increase = _get_fatigue_increase(training_category)
+	var fatigue_increase = _get_fatigue_increase(category)
+	var old_fatigue = current_horse.fatigue
 	current_horse.add_fatigue(fatigue_increase)
+	print("GameManager: 疲労値変化 " + str(old_fatigue) + " → " + str(current_horse.fatigue) + " (+" + str(fatigue_increase) + ")")
 	result.log_messages.append("疲労が" + str(fatigue_increase) + "増加した")
 	
 	# 2. 成功判定
@@ -79,22 +153,95 @@ func execute_training(training_category: String) -> Dictionary:
 		return result
 	
 	# 3. 共鳴判定
-	var resonance = _check_resonance(training_category)
+	var resonance = _check_resonance(category)
 	result.resonance = resonance
 	
 	if resonance:
 		result.log_messages.append("チャクラが震えた…共鳴が発生！")
 	
 	# 4. ステータス成長計算
-	var stats_gains = _calculate_stat_gains(training_category, resonance)
+	var stats_gains = _calculate_stat_gains(category, resonance)
 	result.stats_gains = stats_gains
 	
-	for stat_name in stats_gains:
-		current_horse.current_stats.increase_stat(stat_name, stats_gains[stat_name])
-		result.log_messages.append(stat_name + "が" + str(stats_gains[stat_name]) + "上昇した")
+	# 各ステータスの更新とログ
+	# 最初に現在のステータスを取得
+	if current_horse and is_instance_valid(current_horse):
+		var stats_dict = current_horse.to_dict()
+		if stats_dict.has("current_stats"):
+			var current_stats = stats_dict["current_stats"]
+			
+			# 変更を保存する辞書を作成
+			var updated_stats = current_stats.duplicate()
+			
+			# 各ステータスの更新
+			for stat_name in stats_gains:
+				var gain = stats_gains[stat_name]
+				var old_value = current_stats.get(stat_name, 0)
+				
+				print("DEBUG: " + stat_name + "の更新前の値: " + str(old_value))
+				
+				# ステータス値を更新
+				var new_value = old_value + gain
+				updated_stats[stat_name] = new_value
+				
+				print("GameManager: " + stat_name + " 変化 " + str(old_value) + " → " + str(new_value) + " (+" + str(gain) + ")")
+				
+				# 実際の増加量が期待値と一致するか確認
+				if new_value != old_value + gain:
+					print("警告: ステータス増加量が期待値と一致しません: " + stat_name + 
+						" 期待値=" + str(old_value + gain) + 
+						" 実際=" + str(new_value))
+				
+				result.log_messages.append(stat_name + "が" + str(gain) + "上昇した")
+			
+			# 新しいステータスブロックを作成して馬に適用
+			var new_stat_block_script = load("res://scripts/data/stat_block.gd")
+			var new_stat_block = new_stat_block_script.new(updated_stats)
+			current_horse.current_stats = new_stat_block
+		else:
+			print("DEBUG: current_stats データが見つかりません")
+	else:
+		print("DEBUG: current_horse が無効です")
+
+	# 7. 連続トレーニング記録更新
+	_update_consecutive_category(category)
+
+	# ===== 最終検証 =====
+	# 処理の前後で値が変わったことを検証
+	print("DEBUG: === 最終検証 ===")
+
+	if current_horse and is_instance_valid(current_horse):
+		var stats_dict = current_horse.to_dict()
+		if stats_dict.has("current_stats"):
+			var current_stats = stats_dict["current_stats"]
+			
+			for stat_name in stats_gains:
+				var original = stats_gains[stat_name]
+				var current = current_stats.get(stat_name, 0)
+				
+				print("DEBUG: 最終検証: " + stat_name + ": " + str(original) + " → " + str(current) + 
+					" (変化量: " + str(current - original) + ", 期待値: " + str(original) + ")")
+				
+				# 変化していない場合は警告
+				if current == original:
+					print("警告: " + stat_name + " が更新されていません！")
+		else:
+			print("DEBUG: current_stats データが見つかりません")
+	else:
+		print("DEBUG: current_horse が無効です")
+
+	# StatBlockのclassを確認 - to_dictを使用
+	if current_horse and is_instance_valid(current_horse):
+		var stats_dict = current_horse.to_dict()
+		print("DEBUG: StatBlock情報: " + str(stats_dict.get("current_stats", {})))
+	else:
+		print("DEBUG: current_horse が無効です")
+
+	# Resource参照確認
+	print("DEBUG: current_horse のアドレス: " + str(current_horse))
 	
 	# 5. 熟度加算
-	var familiarity_gains = _calculate_familiarity_gains(training_category)
+	var familiarity_gains = _calculate_familiarity_gains(category)
 	result.familiarity_gains = familiarity_gains
 	
 	for equip_category in familiarity_gains:
@@ -104,7 +251,7 @@ func execute_training(training_category: String) -> Dictionary:
 									  str(familiarity_gains[equip_category]) + "深まった")
 	
 	# 6. スキル進行更新
-	var skill_progress = _update_skill_progress(training_category, resonance)
+	var skill_progress = _update_skill_progress(category, resonance)
 	result.skill_progress = skill_progress
 	
 	for skill_result in skill_progress:
@@ -113,9 +260,6 @@ func execute_training(training_category: String) -> Dictionary:
 		else:
 			result.log_messages.append(skill_result.skill.name + "の習得が進んだ（あと" + 
 									  str(skill_result.skill.progress_threshold - skill_result.skill.progress) + "）")
-	
-	# 7. 連続トレーニング記録更新
-	_update_consecutive_training(training_category)
 	
 	return result
 
@@ -256,10 +400,17 @@ func _calculate_adjustment_coefficient(category: String) -> float:
 		"展開": main_stat = "intellect"
 		"持久": main_stat = "stamina"
 	
-	if main_stat != "" and current_horse.current_stats.get(main_stat) > 120:
-		coefficient *= 0.7
-	elif main_stat != "" and current_horse.current_stats.get(main_stat) > 100:
-		coefficient *= 0.9
+	# to_dictを使ってステータス値を取得
+	if main_stat != "":
+		var stats_dict = current_horse.to_dict()
+		if stats_dict.has("current_stats"):
+			var current_stats = stats_dict["current_stats"]
+			var stat_value = current_stats.get(main_stat, 0)
+			
+			if stat_value > 120:
+				coefficient *= 0.7
+			elif stat_value > 100:
+				coefficient *= 0.9
 	
 	return coefficient
 
@@ -324,7 +475,7 @@ func _update_skill_progress(training_category: String, is_resonance: bool) -> Ar
 	return results
 
 # 連続トレーニング記録更新
-func _update_consecutive_training(category: String) -> void:
+func _update_consecutive_category(category: String) -> void:
 	# まず他のカテゴリをリセット
 	for other_category in consecutive_category.keys():
 		if other_category != category:
@@ -371,6 +522,79 @@ func execute_race() -> Dictionary:
 	
 	return result
 
+# トレーニング状態オブジェクトを取得
+func get_training_state() -> Node:
+	return get_node("/root/TrainingState")
+
+# レース結果を記録する関数
+func record_race_result(result: Dictionary) -> void:
+	# 既存のレコードがあれば上書き、なければ追加
+	if race_records.size() > 0 and race_records.back().position == 0:
+		race_records.pop_back()  # ダミーのレコードを削除
+	
+	# 有効なスキル情報を追加
+	if not result.has("activated_skills"):
+		result.activated_skills = []
+	
+	# ログ情報を追加
+	if not result.has("logs"):
+		result.logs = []
+	
+	# レース名を追加
+	if not result.has("race_name"):
+		var race_name = "チャクラカップ"
+		if current_month < 12:
+			race_name = "クラスレース"
+		elif current_month >= 24:
+			race_name = "チャクラG1"
+		result.race_name = race_name
+	
+	# 月齢情報を追加
+	result.month = current_month
+	result.age = current_age
+	
+	# 記録を追加
+	race_records.append(result)
+	
+	# 成長ボーナスを適用
+	_apply_race_growth_bonus(result)
+
+# レース後の成長ボーナスを適用
+func _apply_race_growth_bonus(race_result: Dictionary) -> void:
+	if not current_horse:
+		return
+	
+	# 成績に応じたボーナス値（1-3着で大きなボーナス）
+	var position_bonus = 0
+	match race_result.position:
+		1: position_bonus = 5  # 1着
+		2: position_bonus = 3  # 2着
+		3: position_bonus = 2  # 3着
+		_: position_bonus = 1  # 4着以下
+	
+	# すべてのステータスに小さなボーナスを適用
+	var stats_to_improve = ["speed", "stamina", "technique", "intellect"]
+	
+	# 現在のステータスを取得
+	var stats_dict = current_horse.to_dict()
+	if stats_dict.has("current_stats"):
+		var current_stats = stats_dict["current_stats"]
+		
+		# 更新するステータス値を計算
+		var updated_stats = current_stats.duplicate()
+		for stat_name in stats_to_improve:
+			var bonus = position_bonus
+			if current_stats.has(stat_name):
+				updated_stats[stat_name] = current_stats[stat_name] + bonus
+		
+		# 新しいステータスブロックを作成して馬に適用
+		var new_stat_block_script = load("res://scripts/data/stat_block.gd")
+		var new_stat_block = new_stat_block_script.new(updated_stats)
+		current_horse.current_stats = new_stat_block
+		
+		print("DEBUG: レース後のボーナス適用: " + str(position_bonus) + "pt加算")
+		print("DEBUG: 更新後のステータス: " + str(updated_stats))
+
 # 利用可能なスキルを設定
 func _setup_available_skills() -> void:
 	available_skills.clear()
@@ -381,21 +605,24 @@ func _setup_available_skills() -> void:
 		var equipment = current_equipment[equip_category]
 		for skill_id in equipment.associated_skill_ids:
 			# DataLoaderからスキルデータを取得
-			var skill_data = DataLoader.get_instance().get_skill_data(skill_id)
+			var data_loader = DataLoaderScript.get_instance()
+			var skill_data = data_loader.get_skill_data(skill_id)
 			
 			if skill_data:
 				# Skillオブジェクトを作成（_load_from_dictで型変換も行われる）
-				var skill = Skill.new(skill_data)
+				var skill_script = load("res://scripts/data/skill.gd")
+				var skill = skill_script.new(skill_data)
 				available_skills.append(skill)
 			else:
 				# データが見つからない場合の簡易作成（バックアップとして）
-				var skill = Skill.new()
+				var skill_script = load("res://scripts/data/skill.gd")
+				var skill = skill_script.new()
 				skill.id = skill_id
 				skill.name = "仮スキル" + skill_id
 				skill.description = "このスキルの説明文"
 				
 				# 型付き配列を正しく作成
-				var training_categories: Array[String] = []
+				var training_categories = []
 				training_categories.append(equipment.related_training)
 				skill.required_training = training_categories
 				
@@ -411,13 +638,13 @@ func calculate_training_result() -> Dictionary:
 	var result = {
 		"total_score": 0,
 		"rank": "C",
-		"stats_summary": current_horse.current_stats.to_dict(),
+		"stats_summary": current_horse.get_current_stats_dict(),
 		"unlocked_skills": unlocked_skills.size(),
 		"race_results": race_records
 	}
 	
 	# スコア計算
-	result.total_score = current_horse.current_stats.get_total_stats() + unlocked_skills.size() * 10
+	result.total_score = current_horse.get_total_stats() + unlocked_skills.size() * 10
 	
 	# ランク決定
 	if result.total_score >= 1000:
@@ -438,6 +665,7 @@ func create_save_data() -> Dictionary:
 	var save_data = {
 		"current_horse": current_horse.to_dict(),
 		"current_month": current_month,
+		"current_age": current_age,
 		"equipments": {},
 		"race_records": race_records,
 		"unlocked_skills": []
@@ -455,5 +683,50 @@ func create_save_data() -> Dictionary:
 
 # セーブデータ読み込み
 func load_save_data(save_data: Dictionary) -> void:
-	# 実装予定
-	pass 
+	# load_from_dictを呼び出して互換性を維持
+	load_from_dict(save_data)
+
+# セーブデータから読み込み
+func load_from_dict(data: Dictionary) -> void:
+	if data.has("current_month"):
+		current_month = data.current_month
+	
+	if data.has("current_age"):
+		current_age = data.current_age
+	else:
+		# 互換性のため年齢を推測（月から計算）
+		current_age = 3 + int(current_month / 12)
+	
+	if data.has("chakra_flow_category"):
+		chakra_flow_category = data.chakra_flow_category
+	
+	if data.has("resonance_gauge"):
+		resonance_gauge = data.resonance_gauge
+	
+	if data.has("consecutive_category"):
+		consecutive_category = data.consecutive_category
+	
+	# 馬データの読み込み
+	if data.has("current_horse") and not data.current_horse.is_empty():
+		var horse_script = load("res://scripts/data/horse.gd")
+		current_horse = horse_script.new(data.current_horse)
+	
+	# 装備データの読み込み
+	if data.has("equipments"):
+		current_equipment.clear()
+		var data_loader = DataLoaderScript.get_instance()
+		
+		for category in data.equipments:
+			var equipment_id = data.equipments[category]
+			if data_loader and data_loader.has_equipment(equipment_id):
+				current_equipment[category] = data_loader.get_equipment(equipment_id)
+	
+	# レース記録の読み込み
+	if data.has("race_records"):
+		race_records = data.race_records 
+
+# 現在の疲労値を取得
+func get_current_fatigue() -> int:
+	if current_horse:
+		return current_horse.fatigue
+	return 0 

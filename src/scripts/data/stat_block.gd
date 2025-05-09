@@ -72,8 +72,60 @@ func get_secondary_stats_array() -> Array:
 
 # ステータスを増加させる
 func increase_stat(stat_name: String, amount: int) -> void:
-	if self.get(stat_name) != null:
-		self.set(stat_name, self.get(stat_name) + amount)
+	print("DEBUG: StatBlock.increase_stat 開始: " + stat_name + " += " + str(amount))
+	var old_value = 0
+	
+	if has_property(stat_name):
+		old_value = get_stat(stat_name)
+		set(stat_name, get_stat(stat_name) + amount)
+		print("DEBUG: StatBlock.increase_stat: " + stat_name + " " + str(old_value) + " → " + str(get_stat(stat_name)))
+	else:
+		print("DEBUG: StatBlock.increase_stat エラー: 無効なステータス名 " + stat_name)
+	
+	print("DEBUG: StatBlock.increase_stat 完了: " + str(self.to_dict()))
+
+# ステータス名で値を取得する
+func get_stat(property: String) -> int:
+	print("DEBUG: StatBlock.get_stat 呼び出し: " + property)
+	var result = 0
+	
+	match property:
+		"speed": result = speed
+		"stamina": result = stamina
+		"technique": result = technique
+		"mental": result = mental
+		"flexibility": result = flexibility
+		"intellect": result = intellect
+		"reaction": result = reaction
+		"balance": result = balance
+		"focus": result = focus
+		"adaptability": result = adaptability
+		"judgment": result = judgment
+		"recovery": result = recovery
+		_: 
+			# 不明なプロパティの場合は0を返す
+			print("DEBUG: StatBlock.get_stat 警告: 不明なプロパティ " + property)
+			result = 0
+	
+	print("DEBUG: StatBlock.get_stat 結果: " + str(result))
+	return result
+
+# プロパティが存在するか確認
+func has_property(property: String) -> bool:
+	match property:
+		"speed": return true
+		"stamina": return true
+		"technique": return true
+		"mental": return true
+		"flexibility": return true
+		"intellect": return true
+		"reaction": return true
+		"balance": return true
+		"focus": return true
+		"adaptability": return true
+		"judgment": return true
+		"recovery": return true
+		_: return false
 
 # ステータス情報を辞書形式で取得
 func to_dict() -> Dictionary:
