@@ -39,6 +39,12 @@ extends Control
 @onready var rest_button = $MarginContainer/MainLayout/BottomButtonsContainer/RestButton
 @onready var race_button = $MarginContainer/MainLayout/BottomButtonsContainer/RaceButton
 @onready var log_button = $MarginContainer/MainLayout/BottomButtonsContainer/LogButton
+@onready var save_button = $MarginContainer/MainLayout/BottomButtonsContainer/SaveButton
+@onready var load_button = $MarginContainer/MainLayout/BottomButtonsContainer/LoadButton
+
+# シーン参照
+var save_load_screen_scene = null  # 必要なときにロードします
+var save_load_screen_instance = null
 
 # 状態管理
 var current_horse = null  # 現在の馬
@@ -60,12 +66,16 @@ func _ready():
 	rest_button.pressed.connect(_on_rest_button_pressed)
 	race_button.pressed.connect(_on_race_button_pressed)
 	log_button.pressed.connect(_on_log_button_pressed)
+	save_button.pressed.connect(_on_save_button_pressed)
+	load_button.pressed.connect(_on_load_button_pressed)
 	
 	# ボタンのフォントサイズ設定
 	train_button.add_theme_font_size_override("font_size", 24)
 	rest_button.add_theme_font_size_override("font_size", 24)
 	race_button.add_theme_font_size_override("font_size", 24)
 	log_button.add_theme_font_size_override("font_size", 24)
+	save_button.add_theme_font_size_override("font_size", 24)
+	load_button.add_theme_font_size_override("font_size", 24)
 	
 	# ゲームマネージャからデータ取得
 	var game_manager = GameManager.get_instance()
@@ -822,3 +832,384 @@ func _proceed_to_next_month() -> void:
 	_update_month_display()
 	print("月表示再更新: " + month_label.text)
 	
+# セーブボタン押下時
+func _on_save_button_pressed():
+	print("セーブボタンが押されました")
+	
+	# セーブオプション選択ダイアログを表示
+	var save_dialog = ConfirmationDialog.new()
+	save_dialog.title = "セーブオプション"
+	save_dialog.dialog_text = "セーブ方法を選択してください"
+	save_dialog.min_size = Vector2(400, 150)
+	
+	# カスタムボタンを追加するためのVBoxContainerを作成
+	var vbox = VBoxContainer.new()
+	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	vbox.custom_minimum_size = Vector2(0, 150)
+	
+	# セーブしてタイトルに戻るボタン
+	var save_and_title_button = Button.new()
+	save_and_title_button.text = "セーブしてタイトルに戻る"
+	save_and_title_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	save_and_title_button.custom_minimum_size = Vector2(0, 40)
+	
+	# セーブして続けるボタン
+	var save_and_continue_button = Button.new()
+	save_and_continue_button.text = "セーブして続ける"
+	save_and_continue_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	save_and_continue_button.custom_minimum_size = Vector2(0, 40)
+	
+	# キャンセルボタン
+	var cancel_button = Button.new()
+	cancel_button.text = "キャンセル"
+	cancel_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	cancel_button.custom_minimum_size = Vector2(0, 40)
+	
+	# ボタンをVBoxに追加
+	vbox.add_child(save_and_title_button)
+	vbox.add_child(save_and_continue_button)
+	vbox.add_child(cancel_button)
+	
+	# ボタンを適切な位置に配置
+	save_dialog.add_child(vbox)
+	
+	# カスタムダイアログのレイアウト調整
+	save_dialog.connect("visibility_changed", func():
+		if save_dialog.visible:
+			var container_height = save_dialog.size.y - 50  # ダイアログのタイトル部分の高さを考慮
+			vbox.position = Vector2(20, 80)
+			vbox.custom_minimum_size = Vector2(save_dialog.size.x - 40, container_height - 100)
+	)
+	
+	# ボタンのイベント接続
+	save_and_title_button.pressed.connect(func():
+		print("「セーブしてタイトルに戻る」が選択されました")
+		save_dialog.hide()
+		# 保存してタイトルに戻るフラグを立てる
+		var return_to_title = true
+		# セーブ処理（スロット選択画面表示）
+		_show_save_load_screen("save", return_to_title)
+	)
+	
+	save_and_continue_button.pressed.connect(func():
+		print("「セーブして続ける」が選択されました")
+		save_dialog.hide()
+		# セーブ処理（スロット選択画面表示）
+		_show_save_load_screen("save", false)
+	)
+	
+	cancel_button.pressed.connect(func():
+		print("「キャンセル」が選択されました")
+		save_dialog.hide()
+	)
+	
+	# ダイアログを表示
+	add_child(save_dialog)
+	save_dialog.popup_centered()
+
+# セーブしてタイトルに戻る処理
+func _on_save_and_title_completed():
+	print("セーブ完了シグナルを受信: タイトル画面に遷移します")
+	# タイトル画面へ遷移
+	get_tree().change_scene_to_file("res://scenes/screens/title_screen.tscn")
+
+# ロードボタン押下時
+func _on_load_button_pressed():
+	print("ロードボタンが押されました")
+	
+	# 既存のセーブデータがあるか確認
+	var game_manager = GameManager.get_instance()
+	if game_manager:
+		var save_slots = game_manager.get_available_save_slots(3)
+		var has_save_data = false
+		
+		for slot in save_slots:
+			if slot.exists:
+				has_save_data = true
+				break
+		
+		if has_save_data:
+			print("セーブデータが見つかりました。ロード画面を表示します。")
+			_show_save_load_screen("load", false)
+		else:
+			print("セーブデータが見つかりません。通知を表示します。")
+			_show_no_save_data_notification()
+	else:
+		print("GameManagerが見つかりません")
+		_show_save_load_screen("load", false)  # とりあえず表示してみる
+
+# セーブデータがない場合の通知
+func _show_no_save_data_notification():
+	var notification = AcceptDialog.new()
+	notification.title = "通知"
+	notification.dialog_text = "ロード可能なセーブデータがありません。"
+	notification.min_size = Vector2(300, 100)
+	add_child(notification)
+	notification.popup_centered()
+
+# セーブ/ロード画面を表示
+func _show_save_load_screen(mode: String, return_to_title: bool = false):
+	print("セーブ/ロード画面表示関数呼び出し: " + mode + ", タイトルに戻る: " + str(return_to_title))
+	
+	# SaveLoadScreenスクリプトが読み込まれているか確認
+	var script_class = load("res://scripts/ui/save_load_screen.gd")
+	if script_class == null:
+		print("エラー: SaveLoadScreenスクリプトを読み込めませんでした")
+		# エラーダイアログを表示
+		var error_dialog = AcceptDialog.new()
+		error_dialog.title = "エラー"
+		error_dialog.dialog_text = "セーブ/ロード機能の準備に失敗しました。\n開発者に問い合わせてください。"
+		add_child(error_dialog)
+		error_dialog.popup_centered()
+		return
+	
+	print("SaveLoadScreenスクリプトを読み込みました: " + str(script_class))
+	
+	# 既存のインスタンスを削除
+	if save_load_screen_instance != null:
+		if is_instance_valid(save_load_screen_instance):
+			print("既存のセーブ/ロード画面を削除します")
+			
+			# シグナル切断
+			if save_load_screen_instance.is_connected("back_requested", _on_save_load_screen_closed):
+				save_load_screen_instance.disconnect("back_requested", _on_save_load_screen_closed)
+			if save_load_screen_instance.is_connected("save_completed", _on_save_and_title_completed):
+				save_load_screen_instance.disconnect("save_completed", _on_save_and_title_completed)
+			if save_load_screen_instance.is_connected("save_completed", _on_save_and_continue_completed):
+				save_load_screen_instance.disconnect("save_completed", _on_save_and_continue_completed)
+			
+			save_load_screen_instance.queue_free()
+		save_load_screen_instance = null
+	
+	# 動的にセーブ/ロード画面を作成
+	print("セーブ/ロード画面を動的に作成します")
+	
+	# Controlノードを作成
+	var screen = Control.new()
+	if !is_instance_valid(screen):
+		print("エラー: Controlノードの作成に失敗しました")
+		return
+		
+	screen.set_script(script_class)
+	if !screen.get_script():
+		print("エラー: スクリプトの設定に失敗しました")
+		screen.queue_free()
+		return
+		
+	screen.set_anchors_preset(Control.PRESET_FULL_RECT)  # 画面全体に広げる
+	
+	# UIを構築
+	var background = ColorRect.new()
+	background.color = Color(0.11, 0.3, 0.5)  # 青色の背景
+	background.set_anchors_preset(Control.PRESET_FULL_RECT)
+	screen.add_child(background)
+	
+	# パネルコンテナを追加
+	var panel = PanelContainer.new()
+	panel.name = "PanelContainer"
+	panel.set_anchors_preset(Control.PRESET_CENTER)
+	panel.custom_minimum_size = Vector2(600, 500)
+	panel.position = Vector2(-300, -250)
+	screen.add_child(panel)
+	
+	# 垂直ボックスを追加
+	var vbox = VBoxContainer.new()
+	vbox.name = "VBoxContainer"
+	vbox.custom_minimum_size = Vector2(580, 480)
+	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	panel.add_child(vbox)
+	
+	# タイトルラベルを追加
+	var title = Label.new()
+	title.name = "TitleLabel"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.text = "ゲームをセーブ" if mode == "save" else "ゲームをロード"
+	title.add_theme_font_size_override("font_size", 28)
+	vbox.add_child(title)
+	
+	# 区切り線1
+	var separator1 = HSeparator.new()
+	separator1.name = "Separator1"
+	vbox.add_child(separator1)
+	
+	# スロットコンテナ
+	var slots = VBoxContainer.new()
+	slots.name = "SlotsContainer"
+	slots.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	vbox.add_child(slots)
+	
+	# 区切り線2
+	var separator2 = HSeparator.new()
+	separator2.name = "Separator2"
+	vbox.add_child(separator2)
+	
+	# ボタンコンテナ
+	var buttons = HBoxContainer.new()
+	buttons.name = "ButtonsContainer"
+	buttons.alignment = BoxContainer.ALIGNMENT_CENTER
+	vbox.add_child(buttons)
+	
+	# 戻るボタン
+	var back_button = Button.new()
+	back_button.name = "BackButton"
+	back_button.text = "戻る"
+	back_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	buttons.add_child(back_button)
+	
+	# 削除ボタン
+	var delete_button = Button.new()
+	delete_button.name = "DeleteButton"
+	delete_button.text = "削除"
+	delete_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	buttons.add_child(delete_button)
+	
+	# アクションボタン
+	var action_button = Button.new()
+	action_button.name = "ActionButton"
+	action_button.text = "セーブ" if mode == "save" else "ロード"
+	action_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	buttons.add_child(action_button)
+	
+	# インスタンスを保存
+	save_load_screen_instance = screen
+	print("セーブ/ロード画面作成完了: " + str(save_load_screen_instance) + ", クラス: " + screen.get_class())
+	
+	# シーンツリーに追加
+	add_child(save_load_screen_instance)
+	print("セーブ/ロード画面をシーンツリーに追加: 子ノード数=" + str(get_child_count()))
+	
+	# インスタンスの有効性を確認
+	if is_instance_valid(save_load_screen_instance):
+		print("セーブ/ロード画面インスタンスは有効です")
+		
+		# シグナル接続
+		print("シグナル接続を開始...")
+		
+		# シグナルが存在するか確認
+		if !save_load_screen_instance.has_signal("back_requested"):
+			print("警告: back_requestedシグナルが見つかりません。手動で定義します。")
+			save_load_screen_instance.add_user_signal("back_requested")
+		
+		if !save_load_screen_instance.has_signal("save_completed"):
+			print("警告: save_completedシグナルが見つかりません。手動で定義します。")
+			save_load_screen_instance.add_user_signal("save_completed")
+		
+		if mode == "save":
+			if return_to_title:
+				print("返却先: タイトル画面")
+				save_load_screen_instance.connect("back_requested", _on_save_load_screen_closed)
+				save_load_screen_instance.connect("save_completed", _on_save_and_title_completed)
+			else:
+				print("返却先: トレーニング画面")
+				save_load_screen_instance.connect("back_requested", _on_save_load_screen_closed)
+				save_load_screen_instance.connect("save_completed", _on_save_and_continue_completed)
+		else: # load モード
+			save_load_screen_instance.connect("back_requested", _on_save_load_screen_closed)
+		
+		print("シグナル接続完了")
+		
+		# モード設定（_ready関数が実行された後に設定）
+		print("モード設定: " + mode)
+		call_deferred("_deferred_check_and_init_save_load_screen", mode)
+		
+		# 画面を表示
+		save_load_screen_instance.visible = true
+		print("セーブ/ロード画面の表示設定: " + str(save_load_screen_instance.visible))
+	else:
+		print("エラー: セーブ/ロード画面インスタンスが無効です")
+		# エラーダイアログ表示
+		var error_dialog = AcceptDialog.new()
+		error_dialog.title = "エラー"
+		error_dialog.dialog_text = "セーブ/ロード画面の表示に失敗しました。"
+		add_child(error_dialog)
+		error_dialog.popup_centered()
+
+# 遅延初期化と安全チェック
+func _deferred_check_and_init_save_load_screen(mode: String):
+	print("遅延初期化を開始します: " + mode)
+	if is_instance_valid(save_load_screen_instance):
+		if mode == "save":
+			if save_load_screen_instance.has_method("set_save_mode"):
+				save_load_screen_instance.set_save_mode()
+				print("セーブモードを設定しました")
+			else:
+				print("警告: set_save_modeメソッドが見つかりません。手動で初期化します。")
+				_manual_init_save_mode()
+		else:
+			if save_load_screen_instance.has_method("set_load_mode"):
+				save_load_screen_instance.set_load_mode()
+				print("ロードモードを設定しました")
+			else:
+				print("警告: set_load_modeメソッドが見つかりません。手動で初期化します。")
+				_manual_init_load_mode()
+	else:
+		print("エラー: 遅延初期化時にインスタンスが無効です")
+
+# 手動でセーブモードを初期化（メソッドが見つからないとき用）
+func _manual_init_save_mode():
+	if is_instance_valid(save_load_screen_instance):
+		# タイトルラベルを設定
+		var title_label = save_load_screen_instance.get_node_or_null("PanelContainer/VBoxContainer/TitleLabel")
+		if title_label:
+			title_label.text = "ゲームをセーブ"
+		
+		# アクションボタンを設定
+		var action_button = save_load_screen_instance.get_node_or_null("PanelContainer/VBoxContainer/ButtonsContainer/ActionButton")
+		if action_button:
+			action_button.text = "セーブ"
+		
+		# 必要ならスロットの更新を手動で呼び出す
+		if save_load_screen_instance.has_method("_refresh_save_slots"):
+			save_load_screen_instance._refresh_save_slots()
+
+# 手動でロードモードを初期化（メソッドが見つからないとき用）
+func _manual_init_load_mode():
+	if is_instance_valid(save_load_screen_instance):
+		# タイトルラベルを設定
+		var title_label = save_load_screen_instance.get_node_or_null("PanelContainer/VBoxContainer/TitleLabel")
+		if title_label:
+			title_label.text = "ゲームをロード"
+		
+		# アクションボタンを設定
+		var action_button = save_load_screen_instance.get_node_or_null("PanelContainer/VBoxContainer/ButtonsContainer/ActionButton")
+		if action_button:
+			action_button.text = "ロード"
+		
+		# 必要ならスロットの更新を手動で呼び出す
+		if save_load_screen_instance.has_method("_refresh_save_slots"):
+			save_load_screen_instance._refresh_save_slots()
+
+# セーブ/ロード画面が閉じられたとき
+func _on_save_load_screen_closed():
+	print("セーブ/ロード画面が閉じられました")
+	
+	if save_load_screen_instance != null && is_instance_valid(save_load_screen_instance):
+		save_load_screen_instance.visible = false
+		
+		# ゲーム状態を再読み込み
+		var game_manager = GameManager.get_instance()
+		if game_manager:
+			print("ゲーム状態を再読み込みします")
+			_load_game_state(game_manager)
+			
+			# UI更新
+			_update_ui()
+			
+			# トレーニング選択肢を再生成
+			_generate_training_options()
+			
+			# トレーニングボタンの状態更新
+			_update_train_button_state()
+	
+# セーブして続ける処理
+func _on_save_and_continue_completed():
+	print("セーブ完了シグナルを受信: トレーニング画面に戻ります")
+	# 通知表示
+	var notification = AcceptDialog.new()
+	notification.title = "通知"
+	notification.dialog_text = "セーブが完了しました。"
+	notification.min_size = Vector2(300, 100)
+	add_child(notification)
+	notification.popup_centered()

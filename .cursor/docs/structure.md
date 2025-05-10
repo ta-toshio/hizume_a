@@ -4,29 +4,22 @@
 
 ```
 hizume/
-└── src/                  # プロジェクトルート
-    ├── 📂 assets/           # 全てのアセットファイル
-    │   ├── 📂 images/       # 画像・スプライト
-    │   ├── 📂 fonts/        # フォントファイル
-    │   └── 📂 sounds/       # サウンドファイル
-    │
-    ├── 📂 resources/        # リソースファイル
-    │   └── 📂 data/         # JSONデータ（マスターデータ）
-    │       ├── horses.json  # 馬データ
-    │       ├── equipment.json # 装備データ
-    │       └── skills.json  # スキルデータ
-    │
-    ├── 📂 scenes/            # シーン（画面）
-    │   ├── 📂 autoloads/     # 自動読み込みシーン
-    │   ├── 📂 screens/       # 画面シーン
-    │   ├── 📂 ui_components/ # UI共通コンポーネント
-    │   └── 📂 setup/         # 初期設定シーン
-    │
-    └── 📂 scripts/           # GDScriptファイル
-        ├── 📂 data/          # データモデル
-        ├── 📂 managers/      # 状態管理
-        ├── 📂 ui/            # UI制御
-        └── 📂 setup/         # 初期設定スクリプト
+├── project.godot     # Godotプロジェクト設定ファイル
+├── default_env.tres  # デフォルト環境設定
+├── scenes/           # シーン関連ファイル
+│   ├── autoloads/    # 自動読み込みシーン
+│   └── screens/      # 各画面のシーンファイル
+├── scripts/          # GDScriptファイル
+│   ├── data/         # データ構造クラス
+│   ├── managers/     # シングルトン・マネージャークラス
+│   └── ui/           # UI制御スクリプト
+├── assets/           # アセットファイル
+│   ├── images/       # 画像ファイル
+│   ├── fonts/        # フォントファイル
+│   ├── audio/        # 音声/音楽ファイル
+│   └── themes/       # UIテーマ定義
+└── resources/        # リソースファイル
+    └── data/         # ゲームデータファイル
 ```
 
 ## 🧩 クラス設計

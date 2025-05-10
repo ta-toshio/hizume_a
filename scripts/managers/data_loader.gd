@@ -350,6 +350,10 @@ func get_skill_data(skill_id: String) -> Dictionary:
 		print("警告: スキルデータが見つかりません: ", skill_id)
 		return {}
 
+# 指定されたIDの装備が存在するかを確認
+func has_equipment(equipment_id: String) -> bool:
+	return _equipment_data.has(equipment_id)
+
 # データファイルの存在確認
 func _check_data_files_exist() -> bool:
 	var file_access = FileAccess.open("res://resources/data/horses.json", FileAccess.READ)

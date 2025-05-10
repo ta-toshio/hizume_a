@@ -25,6 +25,9 @@ var consecutive_category: Dictionary = {}  # 各カテゴリの連続選択回�
 # レース結果記録
 var race_records = []
 
+# ゲームデータ
+var is_game_loaded = false  # ゲームデータがロードされたかどうか
+
 # 初期化
 func _ready():
 	_instance = self
@@ -847,7 +850,8 @@ func load_from_dict(data: Dictionary) -> void:
 		var data_loader = DataLoaderScript.get_instance()
 		
 		for category in data.equipments:
-			var equipment_id = data.equipments[category]
+			var equipment_data = data.equipments[category]
+			var equipment_id = equipment_data.id if equipment_data is Dictionary and equipment_data.has("id") else equipment_data
 			if data_loader and data_loader.has_equipment(equipment_id):
 				current_equipment[category] = data_loader.get_equipment(equipment_id)
 	
@@ -860,3 +864,112 @@ func get_current_fatigue() -> int:
 	if current_horse:
 		return current_horse.fatigue
 	return 0 
+
+# セーブデータをJSONファイルに保存する
+func save_game(save_slot: int = 1) -> bool:
+	var save_data = create_save_data()
+	var save_path = "user://save_slot_" + str(save_slot) + ".json"
+	
+	var save_file = FileAccess.open(save_path, FileAccess.WRITE)
+	if save_file:
+		save_file.store_string(JSON.stringify(save_data))
+		print("セーブデータを保存しました: " + save_path)
+		return true
+	else:
+		print("セーブデータの保存に失敗しました")
+		return false
+
+# セーブデータをJSONファイルから読み込む
+func load_game(save_slot: int = 1) -> bool:
+	var save_path = "user://save_slot_" + str(save_slot) + ".json"
+	
+	if not FileAccess.file_exists(save_path):
+		print("セーブデータが見つかりません: " + save_path)
+		return false
+	
+	var save_file = FileAccess.open(save_path, FileAccess.READ)
+	if save_file:
+		var json_string = save_file.get_as_text()
+		var json_result = JSON.parse_string(json_string)
+		
+		if json_result:
+			load_save_data(json_result)
+			print("セーブデータを読み込みました: " + save_path)
+			is_game_loaded = true  # ロード完了フラグを設定
+			return true
+		else:
+			print("セーブデータの解析に失敗しました")
+			return false
+	else:
+		print("セーブデータの読み込みに失敗しました")
+		return false
+
+# 利用可能なセーブスロットをチェックする
+func get_available_save_slots(max_slots: int = 3) -> Array:
+	var available_slots = []
+	
+	for slot in range(1, max_slots + 1):
+		var save_path = "user://save_slot_" + str(slot) + ".json"
+		
+		if FileAccess.file_exists(save_path):
+			var save_info = _get_save_slot_info(slot)
+			available_slots.append(save_info)
+		else:
+			available_slots.append({
+				"slot": slot,
+				"exists": false,
+				"info": "空のスロット"
+			})
+	
+	return available_slots
+
+# セーブスロットの情報を取得する
+func _get_save_slot_info(slot: int) -> Dictionary:
+	var save_path = "user://save_slot_" + str(slot) + ".json"
+	var save_info = {
+		"slot": slot,
+		"exists": true,
+		"info": "データなし"
+	}
+	
+	if FileAccess.file_exists(save_path):
+		var save_file = FileAccess.open(save_path, FileAccess.READ)
+		if save_file:
+			var json_string = save_file.get_as_text()
+			var json_result = JSON.parse_string(json_string)
+			
+			if json_result:
+				# セーブデータから主要な情報を抽出
+				if json_result.has("current_horse") and json_result.current_horse.has("name"):
+					save_info.horse_name = json_result.current_horse.name
+				
+				if json_result.has("current_month") and json_result.has("current_age"):
+					save_info.progress = str(json_result.current_age) + "歳 " + str(int(json_result.current_month) % 12 + 1) + "月目"
+				
+				if save_info.has("horse_name") and save_info.has("progress"):
+					save_info.info = save_info.horse_name + " (" + save_info.progress + ")"
+				elif save_info.has("horse_name"):
+					save_info.info = save_info.horse_name
+	
+	return save_info
+
+# セーブデータを削除する
+func delete_save(save_slot: int) -> bool:
+	var save_path = "user://save_slot_" + str(save_slot) + ".json"
+	
+	if FileAccess.file_exists(save_path):
+		var dir = DirAccess.open("user://")
+		if dir:
+			var err = dir.remove(save_path)
+			if err == OK:
+				print("セーブデータを削除しました: " + save_path)
+				return true
+			else:
+				print("セーブデータの削除に失敗しました: エラーコード " + str(err))
+				return false
+		else:
+			print("ディレクトリアクセスに失敗しました")
+			return false
+	else:
+		print("削除するセーブデータが見つかりません: " + save_path)
+		return false 

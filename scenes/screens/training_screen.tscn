@@ -546,5 +546,15 @@ text = "レース出走"
 [node name="LogButton" type="Button" parent="MarginContainer/MainLayout/BottomButtonsContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 24
-text = "ログ表示" 
+disabled = true
+text = "Log"
+
+[node name="SaveButton" type="Button" parent="MarginContainer/MainLayout/BottomButtonsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "セーブ"
+
+[node name="LoadButton" type="Button" parent="MarginContainer/MainLayout/BottomButtonsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "ロード" 
