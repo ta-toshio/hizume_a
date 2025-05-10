@@ -58,13 +58,44 @@ var activated_skills = []  # 発動したスキル情報
 var rival_horses = []
 
 func _ready():
-	# テンプレートを非表示に
-	log_event_template.visible = false
+	randomize()
 	
 	# ボタンのシグナル接続
-	start_race_button.pressed.connect(_on_start_race_button_pressed)
 	next_segment_button.pressed.connect(_on_next_segment_button_pressed)
 	back_to_training_button.pressed.connect(_on_back_to_training_button_pressed)
+	start_race_button.pressed.connect(_on_start_race_button_pressed)
+	
+	# ボタンを初期状態に設定
+	next_segment_button.visible = false
+	back_to_training_button.visible = false
+	start_race_button.visible = true
+	
+	# ゲームマネージャからデータ取得
+	var game_manager = GameManager.get_instance()
+	if game_manager:
+		# 現在のシーン情報を記録
+		game_manager.set_meta("previous_scene", "race_screen")
+		
+		# レースデータのロード
+		_load_race_data(game_manager)
+		
+		# デバッグ: スキル情報を出力
+		var skills = game_manager.unlocked_skills
+		print("スキル数: " + str(skills.size()))
+		for skill in skills:
+			print("スキル: " + skill.name + ", 発動タイミング: " + skill.get_meta("activation_timing", "不明"))
+	else:
+		# デバッグモード: ダミーデータ
+		_setup_debug_data()
+	
+	# 結果パネルは最初は非表示
+	result_panel.visible = false
+	
+	# ライバル馬の生成
+	_generate_rival_horses()
+	
+	# UI更新
+	_update_ui()
 	
 	# ボタンのフォントサイズ設定
 	start_race_button.add_theme_font_size_override("font_size", 24)
@@ -93,20 +124,6 @@ func _ready():
 	middle_position.add_theme_font_size_override("font_size", 24)
 	final_position.add_theme_font_size_override("font_size", 24)
 	goal_position.add_theme_font_size_override("font_size", 24)
-	
-	# ゲームマネージャからデータ取得
-	var game_manager = GameManager.get_instance()
-	if game_manager:
-		_load_race_data(game_manager)
-	else:
-		# デバッグモード: ダミーデータでテスト表示
-		_setup_debug_data()
-	
-	# 初期表示更新
-	_update_ui()
-	
-	# ライバル馬の生成
-	_generate_rival_horses()
 
 # レースデータのロード
 func _load_race_data(game_manager: Node) -> void:
@@ -329,14 +346,26 @@ func _on_back_to_training_button_pressed() -> void:
 	var game_manager = GameManager.get_instance()
 	if game_manager:
 		game_manager.record_race_result(race_result)
-		game_manager.advance_month()
 		
-		# トレーニング画面へ遷移
-		get_tree().change_scene_to_file("res://scenes/screens/training_screen.tscn")
-	else:
-		# デバッグモード
-		print("レース結果: " + str(race_positions[4]) + "位, スコア: " + str(_calculate_total_score()))
-		get_tree().change_scene_to_file("res://scenes/screens/training_screen.tscn")
+		# 育成完了チェック - 5歳12月（インデックス32）のレース後は育成完了
+		var training_state = get_node_or_null("/root/TrainingState")
+		var current_month = game_manager.current_month
+		
+		print("DEBUG: レース後の月: " + str(current_month))
+		
+		if training_state and training_state.is_final_month(current_month):
+			print("DEBUG: 最終月のレース後なので結果画面に遷移します: 月=" + str(current_month))
+			# 結果画面に遷移する前に育成結果を計算
+			game_manager.calculate_training_result()
+			# 直接結果画面に遷移
+			get_tree().change_scene_to_file("res://scenes/screens/result_screen.tscn")
+			return
+		else:
+			# レース後は次の月（1月）に進める
+			game_manager.advance_month()
+	
+	# 通常はトレーニング画面に戻る
+	get_tree().change_scene_to_file("res://scenes/screens/training_screen.tscn")
 
 # 区間ごとのレース結果計算
 func _calculate_segment_result() -> void:

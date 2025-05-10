@@ -57,27 +57,80 @@ var current_age = 3  # 現在の年齢
 var current_fatigue = 0  # 現在の疲労度
 var chakra_category = "速力"  # 今月のチャクラ気配
 
+# 準備完了時の初期化
 func _ready():
-	# テンプレートを非表示に
+	# コントロール参照を取得
+	month_label = $MarginContainer/MainLayout/TopPanel/TopBarContainer/MonthLabel
+	turn_label = $MarginContainer/MainLayout/TopPanel/TopBarContainer/TurnLabel
+	chakra_category_label = $MarginContainer/MainLayout/TopPanel/TopBarContainer/ChakraFlowContainer/CategoryLabel
+	stat_grid_container = $MarginContainer/MainLayout/ContentContainer/LeftPanel/StatsScrollContainer/StatsContainer/StatGridContainer
+	
+	# ボタン参照
+	train_button = $MarginContainer/MainLayout/BottomButtonsContainer/TrainButton
+	rest_button = $MarginContainer/MainLayout/BottomButtonsContainer/RestButton
+	race_button = $MarginContainer/MainLayout/BottomButtonsContainer/RaceButton
+	log_button = $MarginContainer/MainLayout/BottomButtonsContainer/LogButton 
+	save_button = $MarginContainer/MainLayout/BottomButtonsContainer/SaveButton
+	load_button = $MarginContainer/MainLayout/BottomButtonsContainer/LoadButton
+	
+	# トレーニングカードの参照を取得
+	training_card_template = $MarginContainer/MainLayout/ContentContainer/CenterPanel/TrainingScrollContainer/TrainingContainer/TrainingItemsContainer/TrainingCardTemplate
+	training_items_container = $MarginContainer/MainLayout/ContentContainer/CenterPanel/TrainingScrollContainer/TrainingContainer/TrainingItemsContainer
+	
+	# ボタンが見つかったか確認（デバッグ）
+	print("DEBUG: ボタン参照確認 - train_button: " + str(train_button != null))
+	print("DEBUG: ボタン参照確認 - rest_button: " + str(rest_button != null))
+	print("DEBUG: ボタン参照確認 - race_button: " + str(race_button != null))
+	
+	# ボタンのシグナル接続（nullチェック追加）
+	if train_button:
+		train_button.pressed.connect(_on_train_button_pressed)
+	else:
+		print("ERROR: トレーニングボタンが見つかりません")
+		
+	if rest_button:
+		rest_button.pressed.connect(_on_rest_button_pressed)
+	else:
+		print("ERROR: 休養ボタンが見つかりません")
+		
+	if race_button:
+		race_button.pressed.connect(_on_race_button_pressed)
+	else:
+		print("ERROR: レースボタンが見つかりません")
+		
+	if log_button:
+		log_button.pressed.connect(_on_log_button_pressed)
+	else:
+		print("ERROR: ログボタンが見つかりません")
+		
+	if save_button:
+		save_button.pressed.connect(_on_save_button_pressed)
+	else:
+		print("ERROR: セーブボタンが見つかりません")
+		
+	if load_button:
+		load_button.pressed.connect(_on_load_button_pressed)
+	else:
+		print("ERROR: ロードボタンが見つかりません")
+	
+	# ボタンのフォントサイズ設定（nullチェック追加）
+	if train_button:
+		train_button.add_theme_font_size_override("font_size", 24)
+	if rest_button:
+		rest_button.add_theme_font_size_override("font_size", 24)
+	if race_button:
+		race_button.add_theme_font_size_override("font_size", 24)
+	if log_button:
+		log_button.add_theme_font_size_override("font_size", 24)
+	if save_button:
+		save_button.add_theme_font_size_override("font_size", 24)
+	if load_button:
+		load_button.add_theme_font_size_override("font_size", 24)
+	
+	# テンプレートカードを非表示にする
 	training_card_template.visible = false
 	
-	# ボタンのシグナル接続
-	train_button.pressed.connect(_on_train_button_pressed)
-	rest_button.pressed.connect(_on_rest_button_pressed)
-	race_button.pressed.connect(_on_race_button_pressed)
-	log_button.pressed.connect(_on_log_button_pressed)
-	save_button.pressed.connect(_on_save_button_pressed)
-	load_button.pressed.connect(_on_load_button_pressed)
-	
-	# ボタンのフォントサイズ設定
-	train_button.add_theme_font_size_override("font_size", 24)
-	rest_button.add_theme_font_size_override("font_size", 24)
-	race_button.add_theme_font_size_override("font_size", 24)
-	log_button.add_theme_font_size_override("font_size", 24)
-	save_button.add_theme_font_size_override("font_size", 24)
-	load_button.add_theme_font_size_override("font_size", 24)
-	
-	# ゲームマネージャからデータ取得
+	# ゲームデータをロード
 	var game_manager = GameManager.get_instance()
 	if game_manager:
 		_load_game_state(game_manager)
@@ -85,14 +138,29 @@ func _ready():
 		# デバッグモード: ダミーデータでテスト表示
 		_load_debug_data()
 	
-	# 初期表示更新
-	_update_ui()
-	
 	# トレーニング選択肢を生成
 	_generate_training_options()
 	
-	# トレーニング実行ボタンの更新
-	_update_train_button_state()
+	# UI更新
+	_update_ui()
+	
+	# TrainingStateシングルトンを取得
+	var training_state = get_node_or_null("/root/TrainingState")
+	
+	# 現在の月が強制レース月かチェック（12月など）
+	if training_state and training_state.is_forced_race_month(current_month):
+		print("DEBUG: 強制レース月のため直接レース画面に遷移します - 月インデックス: " + str(current_month))
+		get_tree().change_scene_to_file("res://scenes/screens/race_screen.tscn")
+		return
+	
+	# 1フレーム待機してから再度ロード（初期化処理の安定化のため）
+	await get_tree().process_frame
+	
+	# データを再度ロードして表示を最新化
+	game_manager = GameManager.get_instance()
+	if game_manager:
+		_load_game_state(game_manager)
+	_update_ui()
 
 # ゲーム状態の読み込み
 func _load_game_state(game_manager: Node) -> void:
@@ -151,13 +219,21 @@ func _update_ui() -> void:
 
 # 月表示の更新
 func _update_month_display() -> void:
-	# 現在の月から表示する月を計算（4月から開始）
-	var month_number = (current_month % 12) + 4
-	if month_number > 12:
-		month_number -= 12
+	var age_text = ""
+	var training_state = get_node_or_null("/root/TrainingState")
+	
+	if training_state:
+		# TrainingStateの関数を使用して正確な年齢と月を表示
+		age_text = training_state.get_age_month_string(current_month)
+	else:
+		# 従来の方法（フォールバック）
+		# 現在の月から表示する月を計算（4月から開始）
+		var month_number = (current_month % 12) + 4
+		if month_number > 12:
+			month_number -= 12
+		age_text = str(current_age) + "歳" + str(month_number) + "月"
 	
 	# 年齢と月を表示（フォントサイズを36ptに）
-	var age_text = str(current_age) + "歳" + str(month_number) + "月"
 	month_label.text = age_text
 	month_label.add_theme_font_size_override("font_size", 36)
 	
@@ -489,7 +565,7 @@ func _get_fatigue_for_category(category: String) -> int:
 		"精神": return 10
 	return 20
 
-# ランダムなチャクラ気配取得（デバッグ用）
+# ランダムなチャクラ気配を取得（デバッグ用）
 func _get_random_chakra_category() -> String:
 	var categories = ["速力", "柔軟", "精神", "技術", "展開", "持久"]
 	return categories[randi() % categories.size()]
@@ -592,7 +668,22 @@ func _update_training_details(training: Dictionary) -> void:
 
 # トレーニング実行ボタンの状態更新
 func _update_train_button_state() -> void:
-	train_button.disabled = (selected_training == null)
+	var can_train = true
+	
+	# 選択中のトレーニングがない場合はボタン無効
+	if selected_training == null:
+		can_train = false
+	
+	# 強制レース月のチェック
+	var training_state = get_node_or_null("/root/TrainingState")
+	if training_state and not training_state.can_train_in_current_month(current_month):
+		can_train = false
+		# 12月はレースのみの月なのでトレーニングカードも無効化
+		for card in training_items_container.get_children():
+			if card != training_card_template:
+				card.modulate = Color(0.5, 0.5, 0.5, 0.5)  # 暗く表示
+	
+	train_button.disabled = !can_train
 
 # レース出走ボタンの状態更新
 func _update_race_button_state() -> void:
@@ -689,6 +780,29 @@ func _on_train_button_pressed() -> void:
 		# 疲労値が更新されているか確認
 		print("トレーニング後の疲労値: " + str(current_fatigue) + " (変化: " + (("+" + str(current_fatigue - before_fatigue)) if current_fatigue > before_fatigue else str(current_fatigue - before_fatigue)) + ")")
 		
+		# 月の進行後に強制レース月かどうかをチェック
+		var training_state = get_node_or_null("/root/TrainingState")
+		if training_state:
+			# 強制レース月チェック - 優先順位1
+			if training_state.is_forced_race_month(current_month):
+				print("DEBUG: トレーニング後に強制レース月になりました（月インデックス: " + str(current_month) + "）")
+				# UI更新だけして直ぐに遷移
+				_update_ui()
+				await get_tree().process_frame
+				# 直接レース処理を実行
+				_handle_forced_race_transition()
+				return
+			
+			# 育成完了チェック - 優先順位2
+			if training_state.is_final_month(current_month):
+				print("DEBUG: トレーニング後に育成完了月になりました（月インデックス: " + str(current_month) + "）")
+				# UI更新だけして直ぐに遷移
+				_update_ui()
+				await get_tree().process_frame
+				# 育成完了処理を実行
+				_handle_training_completion()
+				return
+		
 		# UI強制更新（1回目）
 		print("DEBUG: 1回目のUI更新開始")
 		_update_ui()
@@ -746,6 +860,29 @@ func _on_rest_button_pressed() -> void:
 		print("ゲーム状態ロード後: 月=" + str(current_month) + ", 残りターン=" + str(33 - current_month))
 		print("休養実行後の疲労値: " + str(current_fatigue))
 		
+		# 月の進行後に強制レース月かどうかをチェック
+		var training_state = get_node_or_null("/root/TrainingState")
+		if training_state:
+			# 強制レース月チェック - 優先順位1
+			if training_state.is_forced_race_month(current_month):
+				print("DEBUG: 休養後に強制レース月になりました（月インデックス: " + str(current_month) + "）")
+				# UI更新だけして直ぐに遷移
+				_update_ui()
+				await get_tree().process_frame
+				# 直接レース処理を実行
+				_handle_forced_race_transition()
+				return
+			
+			# 育成完了チェック - 優先順位2
+			if training_state.is_final_month(current_month):
+				print("DEBUG: 休養後に育成完了月になりました（月インデックス: " + str(current_month) + "）")
+				# UI更新だけして直ぐに遷移
+				_update_ui()
+				await get_tree().process_frame
+				# 育成完了処理を実行
+				_handle_training_completion()
+				return
+		
 		# UI強制更新（1回目）
 		_update_ui()
 		print("UI更新完了（1回目）")
@@ -780,11 +917,11 @@ func _on_race_button_pressed() -> void:
 	var game_manager = GameManager.get_instance()
 	if game_manager:
 		# レース画面に遷移
-		get_tree().change_scene_to_file("res://scenes/screens/race_screen.tscn")
+		_transition_to_race_screen()
 	else:
 		# デバッグモード
 		print("レース画面へ遷移")
-		get_tree().change_scene_to_file("res://scenes/screens/race_screen.tscn")
+		_transition_to_race_screen()
 
 # ログボタン押下時
 func _on_log_button_pressed() -> void:
@@ -1213,3 +1350,58 @@ func _on_save_and_continue_completed():
 	notification.min_size = Vector2(300, 100)
 	add_child(notification)
 	notification.popup_centered()
+
+# 強制レース遷移処理
+func _handle_forced_race_transition() -> void:
+	print("DEBUG: 強制レース月のため直接レース画面に遷移します - 月インデックス: " + str(current_month))
+	# 単に画面遷移するだけで確実に実行されるようにする
+	get_tree().change_scene_to_file("res://scenes/screens/race_screen.tscn")
+
+# レース画面への遷移
+func _transition_to_race_screen() -> void:
+	print("DEBUG: レース画面に遷移します")
+	get_tree().change_scene_to_file("res://scenes/screens/race_screen.tscn")
+
+# 育成完了チェック
+func _check_training_completion() -> bool:
+	var training_state = get_node_or_null("/root/TrainingState")
+	if training_state:
+		var is_final = training_state.check_training_completion(current_month)
+		if is_final:
+			print("DEBUG: 育成完了月に到達しました: 月=" + str(current_month))
+		return is_final
+	return false
+
+# 育成完了処理
+func _handle_training_completion() -> void:
+	print("DEBUG: 育成完了処理を実行します - 月インデックス: " + str(current_month))
+	
+	# ゲームマネージャから育成結果を計算
+	var game_manager = GameManager.get_instance()
+	if game_manager:
+		game_manager.calculate_training_result()
+	
+	# 結果画面に遷移
+	get_tree().change_scene_to_file("res://scenes/screens/result_screen.tscn")
+
+# レース画面から戻ってきたときの処理（_ready内から呼ばれる）
+func _on_return_from_race() -> void:
+	print("DEBUG: レース画面からの復帰処理を実行します")
+	
+	# 育成完了チェック（通常はレース画面から直接結果画面に遷移するが、念のためここでもチェック）
+	var training_state = get_node_or_null("/root/TrainingState")
+	if training_state and training_state.is_final_month(current_month):
+		print("DEBUG: レース復帰時、最終月なので結果画面に遷移します: 月=" + str(current_month))
+		
+		# ゲームマネージャから育成結果を計算
+		var game_manager = GameManager.get_instance()
+		if game_manager:
+			game_manager.calculate_training_result()
+		
+		# 結果画面に直接遷移
+		get_tree().change_scene_to_file("res://scenes/screens/result_screen.tscn")
+		return
+	
+	# 通常の月更新処理
+	_update_ui()
+	_generate_training_options()

@@ -1,0 +1,338 @@
+[gd_scene load_steps=2 format=3 uid="uid://cqvqp58olfvou"]
+
+[ext_resource type="Script" path="res://scripts/ui/result_screen.gd" id="1_u67lf"]
+
+[node name="ResultScreen" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_u67lf")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.027451, 0.121569, 0.235294, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="MainLayout" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="TitlePanel" type="PanelContainer" parent="MarginContainer/MainLayout"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/MainLayout/TitlePanel"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 36
+text = "育成結果"
+horizontal_alignment = 1
+
+[node name="ContentContainer" type="HBoxContainer" parent="MarginContainer/MainLayout"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 15
+
+[node name="LeftPanel" type="PanelContainer" parent="MarginContainer/MainLayout/ContentContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="RankPanel" type="PanelContainer" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer/RankPanel"]
+layout_mode = 2
+alignment = 1
+
+[node name="RankTitleLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer/RankPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "総合評価"
+horizontal_alignment = 1
+
+[node name="RankLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer/RankPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.980392, 0.807843, 0.219608, 1)
+theme_override_font_sizes/font_size = 56
+text = "A"
+horizontal_alignment = 1
+
+[node name="ScoreLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer/RankPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "スコア: 875"
+horizontal_alignment = 1
+
+[node name="HorsePanel" type="PanelContainer" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer/HorsePanel"]
+layout_mode = 2
+
+[node name="HorseTitleLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer/HorsePanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "育成馬"
+horizontal_alignment = 1
+
+[node name="HorseNameLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer/HorsePanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "風神雷神"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer/HorsePanel/VBoxContainer"]
+layout_mode = 2
+
+[node name="StatsTitle" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer/HorsePanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "最終ステータス"
+horizontal_alignment = 1
+
+[node name="StatGridContainer" type="GridContainer" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer/HorsePanel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 8
+columns = 2
+
+[node name="SpeedLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer/HorsePanel/VBoxContainer/StatGridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "速力："
+
+[node name="SpeedValue" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer/HorsePanel/VBoxContainer/StatGridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "112"
+
+[node name="FlexibilityLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer/HorsePanel/VBoxContainer/StatGridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "柔軟性："
+
+[node name="FlexibilityValue" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer/HorsePanel/VBoxContainer/StatGridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "95"
+
+[node name="MentalLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer/HorsePanel/VBoxContainer/StatGridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "精神力："
+
+[node name="MentalValue" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer/HorsePanel/VBoxContainer/StatGridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "87"
+
+[node name="TechniqueLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer/HorsePanel/VBoxContainer/StatGridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "技術："
+
+[node name="TechniqueValue" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer/HorsePanel/VBoxContainer/StatGridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "92"
+
+[node name="IntellectLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer/HorsePanel/VBoxContainer/StatGridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "展開力："
+
+[node name="IntellectValue" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer/HorsePanel/VBoxContainer/StatGridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "90"
+
+[node name="StaminaLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer/HorsePanel/VBoxContainer/StatGridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "持久力："
+
+[node name="StaminaValue" type="Label" parent="MarginContainer/MainLayout/ContentContainer/LeftPanel/VBoxContainer/HorsePanel/VBoxContainer/StatGridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "105"
+
+[node name="RightPanel" type="PanelContainer" parent="MarginContainer/MainLayout/ContentContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/RightPanel"]
+layout_mode = 2
+theme_override_constants/separation = 15
+
+[node name="SkillsPanel" type="PanelContainer" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/VBoxContainer/SkillsPanel"]
+layout_mode = 2
+
+[node name="SkillsTitleLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/VBoxContainer/SkillsPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "習得スキル"
+horizontal_alignment = 1
+
+[node name="SkillsScrollContainer" type="ScrollContainer" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/VBoxContainer/SkillsPanel/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="SkillsList" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/VBoxContainer/SkillsPanel/VBoxContainer/SkillsScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SkillItemTemplate" type="PanelContainer" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/VBoxContainer/SkillsPanel/VBoxContainer/SkillsScrollContainer/SkillsList"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/VBoxContainer/SkillsPanel/VBoxContainer/SkillsScrollContainer/SkillsList/SkillItemTemplate"]
+layout_mode = 2
+
+[node name="SkillNameLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/VBoxContainer/SkillsPanel/VBoxContainer/SkillsScrollContainer/SkillsList/SkillItemTemplate/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 20
+text = "無音疾風"
+
+[node name="SkillCategoryLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/VBoxContainer/SkillsPanel/VBoxContainer/SkillsScrollContainer/SkillsList/SkillItemTemplate/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.419608, 0.658824, 0.905882, 1)
+theme_override_font_sizes/font_size = 18
+text = "速力系"
+
+[node name="RacesPanel" type="PanelContainer" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/VBoxContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/VBoxContainer/RacesPanel"]
+layout_mode = 2
+
+[node name="RacesTitleLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/VBoxContainer/RacesPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "レース結果"
+horizontal_alignment = 1
+
+[node name="RacesGridContainer" type="GridContainer" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/VBoxContainer/RacesPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 15
+theme_override_constants/v_separation = 8
+columns = 3
+
+[node name="HeaderRaceLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/VBoxContainer/RacesPanel/VBoxContainer/RacesGridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 20
+text = "レース時期"
+
+[node name="HeaderPositionLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/VBoxContainer/RacesPanel/VBoxContainer/RacesGridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 20
+text = "順位"
+horizontal_alignment = 1
+
+[node name="HeaderScoreLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/VBoxContainer/RacesPanel/VBoxContainer/RacesGridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 20
+text = "スコア"
+horizontal_alignment = 1
+
+[node name="Race1DateLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/VBoxContainer/RacesPanel/VBoxContainer/RacesGridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "3歳12月"
+
+[node name="Race1PositionLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/VBoxContainer/RacesPanel/VBoxContainer/RacesGridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "3着"
+horizontal_alignment = 1
+
+[node name="Race1ScoreLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/VBoxContainer/RacesPanel/VBoxContainer/RacesGridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "756"
+horizontal_alignment = 1
+
+[node name="Race2DateLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/VBoxContainer/RacesPanel/VBoxContainer/RacesGridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "4歳12月"
+
+[node name="Race2PositionLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/VBoxContainer/RacesPanel/VBoxContainer/RacesGridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "1着"
+horizontal_alignment = 1
+
+[node name="Race2ScoreLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/VBoxContainer/RacesPanel/VBoxContainer/RacesGridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "932"
+horizontal_alignment = 1
+
+[node name="Race3DateLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/VBoxContainer/RacesPanel/VBoxContainer/RacesGridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "5歳12月"
+
+[node name="Race3PositionLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/VBoxContainer/RacesPanel/VBoxContainer/RacesGridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "2着"
+horizontal_alignment = 1
+
+[node name="Race3ScoreLabel" type="Label" parent="MarginContainer/MainLayout/ContentContainer/RightPanel/VBoxContainer/RacesPanel/VBoxContainer/RacesGridContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "918"
+horizontal_alignment = 1
+
+[node name="BottomButtonsContainer" type="HBoxContainer" parent="MarginContainer/MainLayout"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 15
+alignment = 1
+
+[node name="ReturnToTitleButton" type="Button" parent="MarginContainer/MainLayout/BottomButtonsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_font_sizes/font_size = 24
+text = "タイトルに戻る"
+
+[node name="SaveRecordButton" type="Button" parent="MarginContainer/MainLayout/BottomButtonsContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_font_sizes/font_size = 24
+text = "育成記録を保存" 

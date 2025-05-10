@@ -765,31 +765,97 @@ func _setup_available_skills() -> void:
 func is_training_complete() -> bool:
 	return current_month >= total_months
 
-# 育成結果の評価を計算
+# 育成結果を計算
 func calculate_training_result() -> Dictionary:
-	# 実際にはより複雑な計算を行う
+	print("DEBUG: 育成結果計算を実行")
+	
+	# 結果を保存する辞書
 	var result = {
 		"total_score": 0,
 		"rank": "C",
-		"stats_summary": current_horse.get_current_stats_dict(),
+		"stats_summary": current_horse.get_current_stats_dict() if current_horse else {},
 		"unlocked_skills": unlocked_skills.size(),
 		"race_results": race_records
 	}
 	
-	# スコア計算
-	result.total_score = current_horse.get_total_stats() + unlocked_skills.size() * 10
+	# 評価項目別のスコア
+	var stats_score = 0    # ステータス合計 (40%)
+	var skills_score = 0   # スキル開花数 (30%)
+	var race_score = 0     # レース成績 (20%)
+	var balance_score = 0  # 育成バランス (10%)
 	
-	# ランク決定
-	if result.total_score >= 1000:
+	# 1. ステータス合計評価 (最大400点)
+	if current_horse and current_horse.current_stats:
+		var total_stats = current_horse.current_stats.get_main_stats_total()
+		print("DEBUG: ステータス合計: " + str(total_stats))
+		
+		# 600点を満点とした場合の割合（最大400点）
+		stats_score = int(min(total_stats / 600.0 * 400, 400))
+	
+	# 2. スキル開花数評価 (最大300点)
+	if unlocked_skills:
+		# 10個を満点とした場合の割合（最大300点）
+		skills_score = int(min(unlocked_skills.size() / 10.0 * 300, 300))
+	
+	# 3. レース成績評価 (最大200点)
+	if race_records:
+		for race in race_records:
+			if race.has("position"):
+				match race.position:
+					1: race_score += 60  # 1位
+					2: race_score += 40  # 2位
+					3: race_score += 30  # 3位
+					4: race_score += 20  # 4位
+					_: race_score += 10  # 5位以下
+	
+	# 4. 育成バランス評価 (最大100点)
+	if current_horse and current_horse.training_count:
+		var categories = ["速力", "柔軟", "精神", "技術", "展開", "持久"]
+		var min_count = 999
+		var max_count = 0
+		var total_count = 0
+		
+		# 各カテゴリのトレーニング回数を確認
+		for category in categories:
+			var count = current_horse.training_count.get(category, 0)
+			min_count = min(min_count, count)
+			max_count = max(max_count, count)
+			total_count += count
+		
+		print("DEBUG: トレーニングバランス - 最小:" + str(min_count) + " 最大:" + str(max_count) + " 合計:" + str(total_count))
+		
+		# バランス係数 = 最小回数 / 最大回数（0.0～1.0）
+		# トレーニング回数が足りない場合は0に
+		if max_count > 0 and total_count >= 10:
+			var balance_factor = float(min_count) / float(max_count)
+			balance_score = int(balance_factor * 100)
+	
+	# 合計スコア（最大1000点）
+	result.total_score = stats_score + skills_score + race_score + balance_score
+	
+	# ランク判定
+	if result.total_score >= 900:
 		result.rank = "S"
-	elif result.total_score >= 850:
+	elif result.total_score >= 750:
 		result.rank = "A"
-	elif result.total_score >= 700:
+	elif result.total_score >= 600:
 		result.rank = "B"
-	elif result.total_score >= 500:
+	elif result.total_score >= 450:
 		result.rank = "C"
 	else:
 		result.rank = "D"
+	
+	# デバッグログ
+	print("DEBUG: 育成結果評価")
+	print("  ステータス合計: " + str(stats_score) + "/400点")
+	print("  スキル開花数: " + str(skills_score) + "/300点 (" + str(unlocked_skills.size()) + "個)")
+	print("  レース成績: " + str(race_score) + "/200点")
+	print("  育成バランス: " + str(balance_score) + "/100点")
+	print("  総合スコア: " + str(result.total_score) + "/1000点")
+	print("  評価ランク: " + result.rank)
+	
+	# 結果を保存（他の場所でも参照できるように）
+	set_meta("training_result", result)
 	
 	return result
 
