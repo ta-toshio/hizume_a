@@ -61,6 +61,9 @@ func _ready():
 			"manual": _create_debug_equipment("manual", "疾風の書", "technique")
 		}
 		
+		# デバッグ用スキルデータを追加
+		_setup_debug_skills()
+		
 		# チャクラ気配を設定
 		_determine_chakra_flow()
 
@@ -77,6 +80,111 @@ func _create_debug_equipment(type: String, name: String, related_training: Strin
 	}
 	var equipment_script = load("res://scripts/data/equipment.gd")
 	return equipment_script.new(equip_data)
+
+# デバッグ用のスキルデータをセットアップする関数
+func _setup_debug_skills() -> void:
+	print("DEBUG: デバッグ用スキルの設定")
+	
+	# Skillクラスのインスタンスを作成
+	var skill_script = load("res://scripts/data/skill.gd")
+	
+	# 発走区間用スキル
+	var start_skill = skill_script.new()
+	start_skill.id = "skill_start"
+	start_skill.name = "疾風の発進"
+	start_skill.description = "発走時に素早くスタートする"
+	# effectディクショナリに設定
+	start_skill.effect = {
+		"timing": "start",
+		"bonus_type": "score",
+		"value": 50
+	}
+	# race_screen.gdで参照できるよう追加のプロパティも設定
+	start_skill.set_meta("activation_timing", "start")
+	start_skill.set_meta("activation_rate", 0.7)
+	start_skill.set_meta("effect_value", 50)
+	# required_trainingの設定（1つずつ追加）
+	start_skill.required_training.clear()
+	start_skill.required_training.append("speed")
+	start_skill.required_training.append("technique")
+	start_skill.unlocked = true
+	start_skill.progress = 100
+	start_skill.progress_threshold = 100
+	
+	# 序盤区間用スキル
+	var early_skill = skill_script.new()
+	early_skill.id = "skill_early"
+	early_skill.name = "序盤加速"
+	early_skill.description = "序盤に加速力を増す"
+	# effectディクショナリに設定
+	early_skill.effect = {
+		"timing": "early", 
+		"bonus_type": "score",
+		"value": 60
+	}
+	# race_screen.gdで参照できるよう追加のプロパティも設定
+	early_skill.set_meta("activation_timing", "early")
+	early_skill.set_meta("activation_rate", 0.6)
+	early_skill.set_meta("effect_value", 60)
+	# required_trainingの設定（1つずつ追加）
+	early_skill.required_training.clear()
+	early_skill.required_training.append("speed")
+	early_skill.unlocked = true
+	early_skill.progress = 100
+	early_skill.progress_threshold = 100
+	
+	# 中盤区間用スキル
+	var middle_skill = skill_script.new()
+	middle_skill.id = "skill_middle"
+	middle_skill.name = "中盤持久"
+	middle_skill.description = "中盤で持久力を発揮する"
+	# effectディクショナリに設定
+	middle_skill.effect = {
+		"timing": "middle",
+		"bonus_type": "score",
+		"value": 70
+	}
+	# race_screen.gdで参照できるよう追加のプロパティも設定
+	middle_skill.set_meta("activation_timing", "middle")
+	middle_skill.set_meta("activation_rate", 0.5)
+	middle_skill.set_meta("effect_value", 70)
+	# required_trainingの設定（1つずつ追加）
+	middle_skill.required_training.clear()
+	middle_skill.required_training.append("stamina")
+	middle_skill.unlocked = true
+	middle_skill.progress = 100
+	middle_skill.progress_threshold = 100
+	
+	# 終盤区間用スキル
+	var late_skill = skill_script.new()
+	late_skill.id = "skill_late"
+	late_skill.name = "終盤脚"
+	late_skill.description = "終盤に加速力を発揮する"
+	# effectディクショナリに設定
+	late_skill.effect = {
+		"timing": "late",
+		"bonus_type": "score",
+		"value": 80
+	}
+	# race_screen.gdで参照できるよう追加のプロパティも設定
+	late_skill.set_meta("activation_timing", "late")
+	late_skill.set_meta("activation_rate", 0.5)
+	late_skill.set_meta("effect_value", 80)
+	# required_trainingの設定（1つずつ追加）
+	late_skill.required_training.clear()
+	late_skill.required_training.append("stamina")
+	late_skill.required_training.append("speed")
+	late_skill.unlocked = true
+	late_skill.progress = 100
+	late_skill.progress_threshold = 100
+	
+	# スキルをunlocked_skillsに追加
+	unlocked_skills.clear()
+	unlocked_skills.append(start_skill)
+	unlocked_skills.append(early_skill)
+	unlocked_skills.append(middle_skill)
+	unlocked_skills.append(late_skill)
+	print("DEBUG: デバッグ用スキル追加完了: " + str(unlocked_skills.size()) + "個のスキル")
 
 # 新しい育成サイクルを開始
 func start_new_training(horse, equipments: Dictionary) -> void:
@@ -331,17 +439,17 @@ func _calculate_stat_gains(category: String, is_resonance: bool) -> Dictionary:
 	
 	# カテゴリごとの基本成長値設定
 	match category:
-		"速力":
+		"speed", "速力":
 			gains = {"speed": 6, "reaction": 2}
-		"柔軟":
+		"flexibility", "柔軟":
 			gains = {"flexibility": 6, "balance": 2}
-		"精神":
+		"mental", "精神":
 			gains = {"mental": 4, "focus": 3}
-		"技術":
+		"technique", "技術":
 			gains = {"technique": 5, "adaptability": 1}
-		"展開":
+		"intellect", "展開":
 			gains = {"intellect": 5, "judgment": 2}
-		"持久":
+		"stamina", "持久":
 			gains = {"stamina": 6, "recovery": 2}
 	
 	# 調整係数計算
@@ -357,7 +465,7 @@ func _calculate_stat_gains(category: String, is_resonance: bool) -> Dictionary:
 	# 装備ボーナス
 	for equip_category in current_equipment:
 		var equipment = current_equipment[equip_category]
-		if equipment.related_training == category:
+		if equipment.related_training == category or _convert_category_ja_to_en(equipment.related_training) == category or _convert_category_en_to_ja(equipment.related_training) == category:
 			bonus_modifier *= (1.0 + equipment.get_training_bonus(is_resonance))
 		
 		# 熟度ボーナス
@@ -374,6 +482,28 @@ func _calculate_stat_gains(category: String, is_resonance: bool) -> Dictionary:
 			gains[stat] = 1
 	
 	return gains
+
+# 日本語カテゴリ名を英語に変換するヘルパー関数
+func _convert_category_ja_to_en(ja_category: String) -> String:
+	match ja_category:
+		"速力": return "speed"
+		"柔軟": return "flexibility"
+		"精神": return "mental"
+		"技術": return "technique"
+		"展開": return "intellect"
+		"持久": return "stamina"
+		_: return ja_category  # 変換できない場合はそのまま返す
+	
+# 英語カテゴリ名を日本語に変換するヘルパー関数
+func _convert_category_en_to_ja(en_category: String) -> String:
+	match en_category:
+		"speed": return "速力"
+		"flexibility": return "柔軟"
+		"mental": return "精神"
+		"technique": return "技術"
+		"intellect": return "展開"
+		"stamina": return "持久"
+		_: return en_category  # 変換できない場合はそのまま返す
 
 # 調整係数計算
 func _calculate_adjustment_coefficient(category: String) -> float:
@@ -393,12 +523,12 @@ func _calculate_adjustment_coefficient(category: String) -> float:
 	# ステータス上限による係数調整
 	var main_stat = ""
 	match category:
-		"速力": main_stat = "speed"
-		"柔軟": main_stat = "flexibility"
-		"精神": main_stat = "mental"
-		"技術": main_stat = "technique"
-		"展開": main_stat = "intellect"
-		"持久": main_stat = "stamina"
+		"speed": main_stat = "speed"
+		"flexibility": main_stat = "flexibility"
+		"mental": main_stat = "mental"
+		"technique": main_stat = "technique"
+		"intellect": main_stat = "intellect"
+		"stamina": main_stat = "stamina"
 	
 	# to_dictを使ってステータス値を取得
 	if main_stat != "":

@@ -134,7 +134,9 @@ func _update_ui() -> void:
 	_update_fatigue_display()
 	_update_familiarity_display()
 	_update_resonance_display()
+	_update_race_button_state()  # レースボタンの状態も明示的に更新
 	
+	print("DEBUG: 現在の月: " + str(current_month) + " レースボタン状態: " + str(!race_button.disabled))
 	print("DEBUG: _update_ui 完了")
 
 # 月表示の更新
@@ -506,8 +508,8 @@ func _add_training_card(training: Dictionary) -> void:
 	category_label.add_theme_font_size_override("font_size", 20)
 	
 	# ステータス表示
-	var main_value = training.main_value if training.has("main_value") else _get_main_value_for_category(training.category)
-	var sub_value = training.sub_value if training.has("sub_value") else _get_sub_value_for_category(training.category)
+	var main_value = training.main_value if "main_value" in training else _get_main_value_for_category(training.category)
+	var sub_value = training.sub_value if "sub_value" in training else _get_sub_value_for_category(training.category)
 	main_stat_label.text = training.main_stat + " +" + str(main_value)
 	main_stat_label.add_theme_font_size_override("font_size", 20)
 	
@@ -563,8 +565,8 @@ func _update_training_details(training: Dictionary) -> void:
 	detail_category_label.add_theme_font_size_override("font_size", 24)
 	
 	# ステータス効果
-	var main_value = training.main_value if training.has("main_value") else _get_main_value_for_category(training.category)
-	var sub_value = training.sub_value if training.has("sub_value") else _get_sub_value_for_category(training.category)
+	var main_value = training.main_value if "main_value" in training else _get_main_value_for_category(training.category)
+	var sub_value = training.sub_value if "sub_value" in training else _get_sub_value_for_category(training.category)
 	
 	detail_main_stat_effect.text = training.main_stat + ": +" + str(main_value)
 	detail_main_stat_effect.add_theme_font_size_override("font_size", 24)
@@ -584,12 +586,23 @@ func _update_train_button_state() -> void:
 
 # レース出走ボタンの状態更新
 func _update_race_button_state() -> void:
+	print("DEBUG: _update_race_button_state 呼び出し - 現在の月: " + str(current_month))
 	var game_manager = GameManager.get_instance()
-	if game_manager and game_manager.get_training_state():
-		race_button.disabled = not game_manager.get_training_state().check_race_availability(current_month)
+	
+	# 現在の月が8以上ならボタンを有効化（最小限の条件）
+	if current_month >= 8:
+		race_button.disabled = false
+		print("DEBUG: current_month >= 8 条件による有効化: " + str(current_month))
+	elif game_manager and game_manager.get_training_state():
+		var result = game_manager.get_training_state().check_race_availability(current_month)
+		race_button.disabled = not result
+		print("DEBUG: TrainingState判定結果: " + str(result))
 	else:
 		# デバッグ: 8ヶ月目以降はレース出走可能
 		race_button.disabled = current_month < 8
+		print("DEBUG: デフォルト判定: " + str(!race_button.disabled))
+		
+	print("DEBUG: 更新後のレースボタン状態: " + str(!race_button.disabled) + " (disabled=" + str(race_button.disabled) + ")")
 
 # トレーニング実行ボタン押下時
 func _on_train_button_pressed() -> void:

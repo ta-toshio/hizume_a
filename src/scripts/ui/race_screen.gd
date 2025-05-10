@@ -467,7 +467,7 @@ func _calculate_rival_segment_score(rival: Dictionary, segment: int) -> int:
 	return int(score)
 
 # スキル発動チェック
-func _check_skill_activation(segment: int) -> Dictionary:
+func _check_skill_activation(segment: int) -> Variant:
 	var game_manager = GameManager.get_instance()
 	if not game_manager:
 		return null
@@ -486,15 +486,15 @@ func _check_skill_activation(segment: int) -> Dictionary:
 		
 		match segment:
 			0:  # 発走
-				segment_condition_met = skill.activation_timing == "start"
+				segment_condition_met = skill.get_meta("activation_timing", "") == "start"
 			1:  # 序盤
-				segment_condition_met = skill.activation_timing == "early"
+				segment_condition_met = skill.get_meta("activation_timing", "") == "early"
 			2:  # 中盤
-				segment_condition_met = skill.activation_timing == "middle"
+				segment_condition_met = skill.get_meta("activation_timing", "") == "middle"
 			3:  # 終盤
-				segment_condition_met = skill.activation_timing == "late"
+				segment_condition_met = skill.get_meta("activation_timing", "") == "late"
 			4:  # ゴール
-				segment_condition_met = skill.activation_timing == "goal"
+				segment_condition_met = skill.get_meta("activation_timing", "") == "goal"
 		
 		if segment_condition_met:
 			eligible_skills.append(skill)
@@ -507,7 +507,7 @@ func _check_skill_activation(segment: int) -> Dictionary:
 	var selected_skill = eligible_skills[randi() % eligible_skills.size()]
 	
 	# 発動率チェック
-	var activation_chance = selected_skill.activation_rate if selected_skill.has("activation_rate") else 0.3
+	var activation_chance = selected_skill.get_meta("activation_rate", 0.3)
 	if randf() > activation_chance:
 		return null
 	
@@ -515,7 +515,7 @@ func _check_skill_activation(segment: int) -> Dictionary:
 	var skill_effect = {
 		"name": selected_skill.name,
 		"description": selected_skill.description,
-		"score_bonus": selected_skill.effect_value if selected_skill.has("effect_value") else 50,
+		"score_bonus": selected_skill.get_meta("effect_value", 50),
 		"segment": segment
 	}
 	

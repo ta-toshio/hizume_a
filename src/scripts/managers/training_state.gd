@@ -97,6 +97,7 @@ func check_special_month(month: int) -> bool:
 func check_race_availability(month: int) -> bool:
 	# 12ターン目／24ターン目推奨（または自由に設定）
 	is_race_available = (month >= 8)  # 最低でも8ヶ月目から出走可能に
+	print("DEBUG: check_race_availability 呼び出し - 月: " + str(month) + " 判定結果: " + str(is_race_available))
 	return is_race_available
 
 # 最後のトレーニング結果を設定
