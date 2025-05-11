@@ -42,6 +42,13 @@ func _ready():
 	return_to_title_button.pressed.connect(_on_return_to_title_button_pressed)
 	save_record_button.pressed.connect(_on_save_record_button_pressed)
 	
+	# エフェクトマネージャーを初期化
+	var effect_manager = get_node_or_null("/root/EffectManager")
+	if effect_manager:
+		effect_manager.setup_effect_container(self)
+	else:
+		print("ERROR: エフェクトマネージャーが見つかりません")
+	
 	# ゲームマネージャからデータ取得
 	var game_manager = GameManager.get_instance()
 	if game_manager:
@@ -50,8 +57,9 @@ func _ready():
 		# デバッグモード: ダミーデータでテスト表示
 		_load_debug_data()
 	
-	# UI更新
-	_update_ui()
+	# UIアニメーション開始（遅延実行）
+	await get_tree().create_timer(0.5).timeout
+	_start_result_animations()
 
 # ゲームマネージャからの育成結果データの読み込み
 func _load_result_data(game_manager) -> void:
@@ -104,9 +112,13 @@ func _load_result_data(game_manager) -> void:
 		rank = _determine_rank(total_score)
 		print("DEBUG: 育成結果を再計算: スコア=" + str(total_score) + ", ランク=" + rank)
 	
-	# スコアと評価を表示
-	score_label.text = "スコア: " + str(total_score)
-	rank_label.text = rank
+	# スコアと評価をプロパティにキャッシュ（アニメーションに使用）
+	set_meta("final_score", total_score)
+	set_meta("final_rank", rank)
+	
+	# 初期表示は0点、ランクは非表示
+	score_label.text = "スコア: 0"
+	rank_label.text = ""
 	
 	# ランクに応じた色設定
 	match rank:
@@ -120,6 +132,121 @@ func _load_result_data(game_manager) -> void:
 			rank_label.add_theme_color_override("font_color", Color(0.8, 0.5, 0.2))  # 銅色
 		_:
 			rank_label.add_theme_color_override("font_color", Color(0.5, 0.5, 0.5))  # グレー
+
+# 結果アニメーションを開始
+func _start_result_animations() -> void:
+	# エフェクトマネージャーの取得
+	var effect_manager = get_node_or_null("/root/EffectManager")
+	
+	# ステータスアニメーション（プログレスバーのアニメーション）
+	_animate_stat_progress()
+	
+	# スコア加算アニメーション
+	await get_tree().create_timer(1.0).timeout
+	var final_score = get_meta("final_score", 0)
+	_animate_score_counter(final_score)
+	
+	# ランク表示アニメーション
+	await get_tree().create_timer(2.0).timeout
+	var final_rank = get_meta("final_rank", "C")
+	_show_rank_with_effect(final_rank)
+	
+	# ランク表示後に波紋エフェクト
+	if effect_manager:
+		var rank_pos = rank_label.global_position + Vector2(rank_label.size.x / 2, rank_label.size.y / 2)
+		effect_manager.show_ripple(rank_pos, "", 2.0)
+
+# ステータスプログレスバーアニメーション
+func _animate_stat_progress() -> void:
+	# ステータス値を元にプログレスバーをアニメーションさせる
+	# 今回は実装を省略（将来的な拡張ポイント）
+	pass
+
+# スコアカウンターアニメーション
+func _animate_score_counter(final_score: int) -> void:
+	var current_score = 0
+	var duration = 1.5  # アニメーション時間
+	var increment = max(1, int(final_score / (duration * 60)))  # 60fpsを想定
+	
+	# スコアカウントアップ用のタイマー
+	var timer = Timer.new()
+	timer.wait_time = 1.0 / 60.0  # 60fps
+	timer.one_shot = false
+	add_child(timer)
+	
+	timer.timeout.connect(func():
+		current_score += increment
+		if current_score >= final_score:
+			current_score = final_score
+			timer.stop()
+			timer.queue_free()
+		score_label.text = "スコア: " + str(current_score)
+	)
+	
+	timer.start()
+
+# ランク表示アニメーション
+func _show_rank_with_effect(rank: String) -> void:
+	# ランクを表示
+	rank_label.text = rank
+	
+	# アニメーション効果
+	var original_scale = rank_label.scale
+	rank_label.scale = Vector2(3.0, 3.0)
+	rank_label.modulate.a = 0.0
+	
+	var tween = create_tween()
+	tween.tween_property(rank_label, "scale", original_scale, 0.5).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+	tween.parallel().tween_property(rank_label, "modulate:a", 1.0, 0.5)
+	
+	# ランクに応じた特殊効果
+	match rank:
+		"S":
+			_play_rank_s_effect()
+		"A":
+			_play_rank_a_effect()
+		"B":
+			_play_rank_b_effect()
+		_:
+			pass  # 低ランクは特別な効果なし
+
+# Sランクの特殊効果
+func _play_rank_s_effect() -> void:
+	# 将来的な実装: 金色の粒子エフェクトなど
+	# 例: パーティクルシステムを使った演出
+	print("Sランク達成！特別演出開始")
+	
+	# エフェクトマネージャーの取得
+	var effect_manager = get_node_or_null("/root/EffectManager")
+	if effect_manager:
+		# 画面中央で波紋エフェクト（大きめ）
+		var center = Vector2(get_viewport_rect().size.x / 2, get_viewport_rect().size.y / 2)
+		effect_manager.show_ripple(center, "", 3.0)
+		
+		# 効果音再生
+		effect_manager.play_sound("共鳴")  # 仮で共鳴の音を使用
+
+# Aランクの特殊効果
+func _play_rank_a_effect() -> void:
+	# Aランク用の演出（Sより控えめ）
+	print("Aランク達成！演出開始")
+	
+	# エフェクトマネージャーの取得
+	var effect_manager = get_node_or_null("/root/EffectManager")
+	if effect_manager:
+		# ランク表示位置で波紋エフェクト
+		var rank_pos = rank_label.global_position + Vector2(rank_label.size.x / 2, rank_label.size.y / 2)
+		effect_manager.show_ripple(rank_pos, "", 2.0)
+
+# Bランクの特殊効果
+func _play_rank_b_effect() -> void:
+	# Bランク用の演出（控えめ）
+	print("Bランク達成！シンプル演出")
+	
+	# シンプルなアニメーション効果
+	var tween = create_tween()
+	tween.tween_property(rank_label, "modulate", Color(1.2, 1.2, 1.3), 0.3)
+	tween.tween_property(rank_label, "modulate", Color(1, 1, 1), 0.3)
 
 # レース記録の表示
 func _display_race_records(race_records: Array) -> void:

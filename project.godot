@@ -20,6 +20,7 @@ config/icon="res://icon.png"
 GameManager="*res://scenes/autoloads/game_manager.tscn"
 TrainingState="*res://scenes/autoloads/training_state.tscn"
 DataLoader="*res://scenes/autoloads/data_loader.tscn"
+EffectManager="*res://scenes/autoloads/effect_manager.tscn"
 
 [display]
 

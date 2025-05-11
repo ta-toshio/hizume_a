@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://cyvpdnbkd5u38"]
+
+[ext_resource type="Shader" path="res://resources/shaders/transition_effect.gdshader" id="1_brnkj"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1q0y3"]
+shader = ExtResource("1_brnkj")
+shader_parameter/progress = 0.0
+shader_parameter/transition_type = 0
+shader_parameter/transition_color = Color(0, 0, 0, 1)
+shader_parameter/smoothness = 0.1
+
+[node name="ScreenTransition" type="ColorRect"]
+material = SubResource("ShaderMaterial_1q0y3")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2 

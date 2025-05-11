@@ -77,6 +77,13 @@ func _ready():
 	training_card_template = $MarginContainer/MainLayout/ContentContainer/CenterPanel/TrainingScrollContainer/TrainingContainer/TrainingItemsContainer/TrainingCardTemplate
 	training_items_container = $MarginContainer/MainLayout/ContentContainer/CenterPanel/TrainingScrollContainer/TrainingContainer/TrainingItemsContainer
 	
+	# エフェクトマネージャーを初期化
+	var effect_manager = get_node_or_null("/root/EffectManager")
+	if effect_manager:
+		effect_manager.setup_effect_container(self)
+	else:
+		print("ERROR: エフェクトマネージャーが見つかりません")
+	
 	# ボタンが見つかったか確認（デバッグ）
 	print("DEBUG: ボタン参照確認 - train_button: " + str(train_button != null))
 	print("DEBUG: ボタン参照確認 - rest_button: " + str(rest_button != null))
@@ -737,6 +744,28 @@ func _on_train_button_pressed() -> void:
 		var result = game_manager.execute_training(category_jp)
 		print("トレーニング結果: " + str(result))
 		
+		# エフェクトマネージャーの取得
+		var effect_manager = get_node_or_null("/root/EffectManager")
+		
+		# チャクラ共鳴エフェクト表示
+		if result.has("resonance") and result.resonance and effect_manager:
+			print("DEBUG: チャクラ共鳴発生 - エフェクト表示")
+			# トップバーのチャクラ表示位置を取得
+			var chakra_label = $MarginContainer/MainLayout/TopPanel/TopBarContainer/ChakraFlowContainer/CategoryLabel
+			var global_pos = chakra_label.global_position + Vector2(chakra_label.size.x / 2, chakra_label.size.y / 2)
+			effect_manager.show_resonance_effect(global_pos, category_jp)
+		
+		# スキル開花エフェクト表示
+		if result.has("skill_progress") and effect_manager:
+			for skill_result in result.skill_progress:
+				if skill_result.bloomed:
+					print("DEBUG: スキル「" + skill_result.skill.name + "」が開花")
+					# 画面中央付近に表示
+					var center_pos = Vector2(get_viewport_rect().size.x / 2, get_viewport_rect().size.y / 2)
+					effect_manager.show_skill_bloom_effect(center_pos, skill_result.skill.name, category_jp)
+					# 少し待機してエフェクトを見せる
+					await get_tree().create_timer(0.5).timeout
+		
 		# トレーニング結果を詳細に表示
 		if result.has("stats_gains"):
 			print("ステータス増加: " + str(result.stats_gains))
@@ -745,6 +774,12 @@ func _on_train_button_pressed() -> void:
 				if before_stats.has(stat_name):
 					var new_value = before_stats[stat_name] + gain
 					print("  " + stat_name + ": " + str(before_stats[stat_name]) + " → " + str(new_value) + " (+" + str(gain) + ")")
+					
+					# ステータス変化エフェクト表示
+					if gain > 0 and effect_manager:
+						var stat_label = _find_stat_label(stat_name)
+						if stat_label:
+							effect_manager.show_stat_change(stat_label, gain)
 		
 		if result.has("log_messages"):
 			print("ログメッセージ:")
@@ -1354,13 +1389,26 @@ func _on_save_and_continue_completed():
 # 強制レース遷移処理
 func _handle_forced_race_transition() -> void:
 	print("DEBUG: 強制レース月のため直接レース画面に遷移します - 月インデックス: " + str(current_month))
-	# 単に画面遷移するだけで確実に実行されるようにする
-	get_tree().change_scene_to_file("res://scenes/screens/race_screen.tscn")
+	
+	# エフェクトマネージャーを使って遷移エフェクト表示
+	var effect_manager = get_node_or_null("/root/EffectManager")
+	if effect_manager:
+		effect_manager.transition_to_scene("res://scenes/screens/race_screen.tscn", 2, 0.8)
+	else:
+		# エフェクトを使わない直接遷移
+		get_tree().change_scene_to_file("res://scenes/screens/race_screen.tscn")
 
 # レース画面への遷移
 func _transition_to_race_screen() -> void:
 	print("DEBUG: レース画面に遷移します")
-	get_tree().change_scene_to_file("res://scenes/screens/race_screen.tscn")
+	
+	# エフェクトマネージャーを使って遷移エフェクト表示
+	var effect_manager = get_node_or_null("/root/EffectManager")
+	if effect_manager:
+		effect_manager.transition_to_scene("res://scenes/screens/race_screen.tscn", 2, 0.8)
+	else:
+		# エフェクトを使わない直接遷移
+		get_tree().change_scene_to_file("res://scenes/screens/race_screen.tscn")
 
 # 育成完了チェック
 func _check_training_completion() -> bool:
@@ -1381,8 +1429,13 @@ func _handle_training_completion() -> void:
 	if game_manager:
 		game_manager.calculate_training_result()
 	
-	# 結果画面に遷移
-	get_tree().change_scene_to_file("res://scenes/screens/result_screen.tscn")
+	# エフェクトマネージャーを使って遷移エフェクト表示
+	var effect_manager = get_node_or_null("/root/EffectManager")
+	if effect_manager:
+		effect_manager.transition_to_scene("res://scenes/screens/result_screen.tscn", 3, 1.2)
+	else:
+		# エフェクトを使わない直接遷移
+		get_tree().change_scene_to_file("res://scenes/screens/result_screen.tscn")
 
 # レース画面から戻ってきたときの処理（_ready内から呼ばれる）
 func _on_return_from_race() -> void:
@@ -1398,10 +1451,46 @@ func _on_return_from_race() -> void:
 		if game_manager:
 			game_manager.calculate_training_result()
 		
-		# 結果画面に直接遷移
-		get_tree().change_scene_to_file("res://scenes/screens/result_screen.tscn")
+		# エフェクトマネージャーを使って遷移エフェクト表示
+		var effect_manager = get_node_or_null("/root/EffectManager")
+		if effect_manager:
+			effect_manager.transition_to_scene("res://scenes/screens/result_screen.tscn", 3, 1.2)
+		else:
+			# エフェクトを使わない直接遷移
+			get_tree().change_scene_to_file("res://scenes/screens/result_screen.tscn")
 		return
 	
 	# 通常の月更新処理
 	_update_ui()
 	_generate_training_options()
+
+# ステータスラベルを名前で検索
+func _find_stat_label(stat_name: String) -> Control:
+	# ステータス名から日本語表示名へのマッピング
+	var stat_display_names = {
+		"speed": "速力",
+		"stamina": "持久力",
+		"flexibility": "柔軟性",
+		"mental": "精神力",
+		"technique": "技術",
+		"intellect": "展開力",
+		"reaction": "反応", 
+		"balance": "バランス",
+		"focus": "集中力",
+		"adaptability": "順応性",
+		"judgment": "判断力",
+		"recovery": "回復力"
+	}
+	
+	# 日本語表示名を取得
+	var display_name = stat_display_names.get(stat_name, stat_name)
+	
+	# ステータスグリッドからラベルを検索
+	for child in stat_grid_container.get_children():
+		if child is Label and child.name.ends_with("Label") and child.text.begins_with(display_name):
+			# 名前が一致するラベルを見つけた
+			return child
+	
+	# 見つからなかった場合
+	print("DEBUG: ステータスラベル「" + display_name + "」が見つかりません")
+	return null

@@ -1,0 +1,27 @@
+[gd_scene load_steps=3 format=3 uid="uid://ddjrdxg4vepg5"]
+
+[ext_resource type="Script" path="res://scripts/effects/ripple_effect.gd" id="1_8vpla"]
+[ext_resource type="Shader" path="res://resources/shaders/ripple_effect.gdshader" id="2_cflb8"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2ejxw"]
+shader = ExtResource("2_cflb8")
+shader_parameter/ripple_color = Color(0.5, 0.3, 0.9, 1)
+shader_parameter/ripple_width = 0.1
+shader_parameter/ripple_speed = 1.0
+shader_parameter/ripple_strength = 0.0
+shader_parameter/center = Vector2(0.5, 0.5)
+shader_parameter/max_radius = 0.1
+shader_parameter/fade_edge = 0.1
+
+[node name="RippleEffect" type="ColorRect"]
+material = SubResource("ShaderMaterial_2ejxw")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0)
+script = ExtResource("1_8vpla")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."] 

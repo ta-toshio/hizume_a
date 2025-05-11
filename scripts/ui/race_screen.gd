@@ -70,6 +70,13 @@ func _ready():
 	back_to_training_button.visible = false
 	start_race_button.visible = true
 	
+	# エフェクトマネージャーを初期化
+	var effect_manager = get_node_or_null("/root/EffectManager")
+	if effect_manager:
+		effect_manager.setup_effect_container(self)
+	else:
+		print("ERROR: エフェクトマネージャーが見つかりません")
+	
 	# ゲームマネージャからデータ取得
 	var game_manager = GameManager.get_instance()
 	if game_manager:
@@ -357,15 +364,27 @@ func _on_back_to_training_button_pressed() -> void:
 			print("DEBUG: 最終月のレース後なので結果画面に遷移します: 月=" + str(current_month))
 			# 結果画面に遷移する前に育成結果を計算
 			game_manager.calculate_training_result()
-			# 直接結果画面に遷移
-			get_tree().change_scene_to_file("res://scenes/screens/result_screen.tscn")
+			
+			# エフェクトマネージャーで遷移エフェクト表示
+			var effect_manager = get_node_or_null("/root/EffectManager")
+			if effect_manager:
+				effect_manager.transition_to_scene("res://scenes/screens/result_screen.tscn", 1, 1.0)
+			else:
+				# 直接遷移
+				get_tree().change_scene_to_file("res://scenes/screens/result_screen.tscn")
+			
 			return
 		else:
 			# レース後は次の月（1月）に進める
 			game_manager.advance_month()
 	
-	# 通常はトレーニング画面に戻る
-	get_tree().change_scene_to_file("res://scenes/screens/training_screen.tscn")
+	# 通常のトレーニング画面への遷移処理
+	var effect_manager = get_node_or_null("/root/EffectManager")
+	if effect_manager:
+		effect_manager.transition_to_scene("res://scenes/screens/training_screen.tscn", 0, 0.7)
+	else:
+		# エフェクトを使わない直接遷移
+		get_tree().change_scene_to_file("res://scenes/screens/training_screen.tscn")
 
 # 区間ごとのレース結果計算
 func _calculate_segment_result() -> void:
@@ -568,8 +587,8 @@ func _add_skill_log(skill_effect: Dictionary) -> void:
 	
 	# ログ内容を設定
 	var segment_label = log_entry.get_node("VBoxContainer/SegmentLabel")
-	segment_label.text = "[" + segment_name + "]"
-	segment_label.add_theme_font_size_override("font_size", 20)
+	segment_label.text = segment_name
+	segment_label.add_theme_font_size_override("font_size", 18)
 	
 	var skill_name_label = log_entry.get_node("VBoxContainer/SkillNameLabel")
 	skill_name_label.text = skill_effect.name
@@ -578,6 +597,32 @@ func _add_skill_log(skill_effect: Dictionary) -> void:
 	var skill_effect_label = log_entry.get_node("VBoxContainer/SkillEffectLabel")
 	skill_effect_label.text = "+ " + str(skill_effect.score_bonus) + " pt"
 	skill_effect_label.add_theme_font_size_override("font_size", 20)
+	
+	# エフェクトマネージャーを取得して視覚エフェクトを表示
+	var effect_manager = get_node_or_null("/root/EffectManager")
+	if effect_manager:
+		# スキル発動位置（馬位置表示の近く）
+		var position_label = null
+		match skill_effect.segment:
+			0: position_label = start_position
+			1: position_label = first_position
+			2: position_label = middle_position
+			3: position_label = final_position
+			4: position_label = goal_position
+		
+		if position_label:
+			# 位置ラベルの位置を基準にエフェクト表示
+			var effect_pos = position_label.global_position + Vector2(position_label.size.x, position_label.size.y / 2)
+			
+			# スキル発動エフェクト（カテゴリは仮で"技術"を指定）
+			effect_manager.show_ripple(effect_pos, "技術", 1.5)
+			
+			# スキル名ポップアップも表示
+			var popup_pos = Vector2(get_viewport_rect().size.x / 2, get_viewport_rect().size.y / 2)
+			effect_manager.show_skill_name_popup(skill_effect.name, popup_pos)
+			
+			# 効果音再生
+			effect_manager.play_sound("スキル発動")
 
 # レース結果表示
 func _show_race_result() -> void:
