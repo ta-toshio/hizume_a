@@ -70,8 +70,10 @@ func _create_fade_animation():
 	animation.length = 1.0  # アニメーション長さ
 	animation.loop_mode = Animation.LOOP_NONE  # ループなし
 	
-	# AnimationPlayerに追加
-	animation_player.add_animation("fade_out", animation)
+	# AnimationPlayerに追加 (Godot 4.x用に修正)
+	var library = AnimationLibrary.new()
+	library.add_animation("fade_out", animation)
+	animation_player.add_animation_library("default", library)
 
 # 外部から呼び出せるメソッド（即時再生）
 func show_ripple_effect(position: Vector2, category: String = "", duration: float = 1.5):
